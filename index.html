@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ATC Briefing Simulation</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>ATC Radar Briefing</h1>
+      <nav class="tabs">
+        <button class="tab-btn active" data-tab="sim">Local</button>
+        <button class="tab-btn" data-tab="ground">Ground</button>
+        <button class="tab-btn" data-tab="compare">Mix Mode</button>
+        <button class="tab-btn" data-tab="config">Config</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ===== Radar Simulation tab ===== -->
+      <section id="tab-sim" class="tab-panel active">
+        <div class="sim-layout">
+          <div class="scope-wrap">
+            <canvas id="scope" width="600" height="600"></canvas>
+            <div class="controls">
+              <button id="btn-prev">&laquo; Previous</button>
+              <button id="btn-next">Next &raquo;</button>
+              <button id="btn-reset" class="secondary">Reset</button>
+            </div>
+          </div>
+
+          <aside class="side-panel">
+            <h2>Inbound Sequence</h2>
+            <p class="readout">
+              <span id="readout-nm">80 NM</span>
+              <span id="readout-ttt">T-16:00</span>
+            </p>
+            <table class="ring-list">
+              <thead>
+                <tr>
+                  <th>Range</th>
+                  <th>To touchdown</th>
+                </tr>
+              </thead>
+              <tbody id="ring-list-body">
+                <!-- filled by JS -->
+              </tbody>
+            </table>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ===== Ground tab ===== -->
+      <section id="tab-ground" class="tab-panel">
+        <div class="sim-layout">
+          <div class="scope-wrap">
+            <canvas id="airport" width="600" height="600"></canvas>
+            <div class="controls">
+              <button id="btn-ground-prev">&laquo; Previous</button>
+              <button id="btn-ground-next">Next &raquo;</button>
+              <button id="btn-ground-reset" class="secondary">Reset</button>
+            </div>
+          </div>
+
+          <aside class="side-panel">
+            <h2>Departure Sequence</h2>
+            <p class="readout">
+              <span id="ground-readout-phase">Push Back</span>
+              <span id="ground-readout-dur">3:00</span>
+            </p>
+            <table class="ring-list">
+              <thead>
+                <tr>
+                  <th>Phase</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody id="ground-phase-body">
+                <!-- filled by JS -->
+              </tbody>
+            </table>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ===== Compare tab ===== -->
+      <section id="tab-compare" class="tab-panel">
+        <div class="compare-layout">
+          <div class="compare-canvas-wrap">
+            <div class="compare-canvas-pair">
+              <div class="compare-pane">
+                <span class="pane-label">In-flight (Local)</span>
+                <canvas id="compare-scope" width="600" height="600"></canvas>
+              </div>
+              <div class="compare-pane">
+                <span class="pane-label">On Ground</span>
+                <canvas id="compare-airport" width="600" height="600"></canvas>
+              </div>
+            </div>
+            </div>
+
+          <aside class="compare-side">
+            <div class="controls" style="margin-bottom: 14px">
+              <button id="btn-cmp-prev">&laquo; Previous</button>
+              <button id="btn-cmp-next">Next &raquo;</button>
+              <button id="btn-cmp-reset" class="secondary">Reset</button>
+              <button id="btn-cmp-toggle" class="secondary">Show Table</button>
+            </div>
+            <div id="cmp-correlation" style="display: none">
+              <h2>Arrival / Departure Correlation</h2>
+              <div class="compare-readout">
+                <div>
+                  <span class="label">In-flight</span>
+                  <span id="cmp-inflight-nm">40.0 NM</span>
+                  <span id="cmp-inflight-ttt" style="margin-left: 8px">T-8:00</span>
+                </div>
+                <div>
+                  <span class="label">Ground</span>
+                  <span id="cmp-ground-phase">Push Back</span>
+                  <span id="cmp-ground-dur" style="margin-left: 8px">3:00</span>
+                </div>
+              </div>
+              <table class="compare-table">
+                <thead>
+                  <tr>
+                    <th>Ground Phase</th>
+                    <th>Duration</th>
+                    <th>In-flight</th>
+                    <th>TTD</th>
+                  </tr>
+                </thead>
+                <tbody id="cmp-table-body">
+                  <!-- filled by JS -->
+                </tbody>
+              </table>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ===== Config tab ===== -->
+      <section id="tab-config" class="tab-panel">
+        <h2>Timing Configuration</h2>
+        <p class="hint">
+          Set the time remaining to touchdown for each range ring (mm:ss).
+        </p>
+        <table class="config-table">
+          <thead>
+            <tr>
+              <th>Range (NM)</th>
+              <th>Minutes</th>
+              <th>Seconds</th>
+              <th>To touchdown</th>
+            </tr>
+          </thead>
+          <tbody id="config-table-body">
+            <!-- filled by JS -->
+          </tbody>
+        </table>
+        <div class="controls">
+          <button id="btn-save">Save</button>
+          <button id="btn-defaults" class="secondary">Reset to defaults</button>
+          <span id="save-status" class="save-status"></span>
+        </div>
+
+        <hr class="config-divider" />
+
+        <h2>Ground Phase Durations</h2>
+        <p class="hint">Set the duration for each ground phase (mm:ss).</p>
+        <table class="config-table">
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Minutes</th>
+              <th>Seconds</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody id="ground-config-body">
+            <!-- filled by JS -->
+          </tbody>
+        </table>
+        <div class="controls">
+          <button id="btn-ground-save">Save</button>
+          <button id="btn-ground-defaults" class="secondary">
+            Reset to defaults
+          </button>
+          <span id="ground-save-status" class="save-status"></span>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/radar.js"></script>
+    <script src="js/sim.js"></script>
+    <script src="js/airport.js"></script>
+    <script src="js/ground-sim.js"></script>
+    <script src="js/compare.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

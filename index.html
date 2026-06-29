@@ -13,6 +13,7 @@
         <button class="tab-btn active" data-tab="sim">Local</button>
         <button class="tab-btn" data-tab="ground">Ground</button>
         <button class="tab-btn" data-tab="compare">Mix Mode</button>
+        <button class="tab-btn" data-tab="circuit">Circuit</button>
         <button class="tab-btn" data-tab="config">Config</button>
       </nav>
     </header>
@@ -138,6 +139,60 @@
         </aside>
       </section>
 
+      <!-- ===== Circuit tab ===== -->
+      <section id="tab-circuit" class="tab-panel">
+        <div class="compare-layout">
+          <div class="compare-canvas-wrap">
+            <div class="compare-canvas-pair">
+              <div class="compare-pane">
+                <span class="pane-label">In-flight (Local)</span>
+                <canvas id="circuit-scope" width="600" height="600"></canvas>
+              </div>
+              <div class="compare-pane">
+                <span class="pane-label">Traffic Circuit</span>
+                <canvas id="circuit-pattern" width="600" height="600"></canvas>
+              </div>
+            </div>
+            <div class="controls" style="margin-top: 14px; justify-content: center">
+              <button id="btn-cir-prev">&laquo; Previous</button>
+              <button id="btn-cir-next">Next &raquo;</button>
+              <button id="btn-cir-reset" class="secondary">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-cir-toggle" class="cmp-toggle-btn">Table</button>
+
+        <aside id="cir-correlation" class="compare-side cmp-drawer">
+          <h2>In-flight / Circuit Correlation</h2>
+          <div class="compare-readout">
+            <div>
+              <span class="label">In-flight</span>
+              <span id="cir-inflight-nm">20.0 NM</span>
+              <span id="cir-inflight-ttt" style="margin-left: 8px">T-4:00</span>
+            </div>
+            <div>
+              <span class="label">Circuit</span>
+              <span id="cir-circuit-phase">Downwind Leg</span>
+              <span id="cir-circuit-dur" style="margin-left: 8px">1:00</span>
+            </div>
+          </div>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Circuit Phase</th>
+                <th>Duration</th>
+                <th>In-flight</th>
+                <th>TTD</th>
+              </tr>
+            </thead>
+            <tbody id="cir-table-body">
+              <!-- filled by JS -->
+            </tbody>
+          </table>
+        </aside>
+      </section>
+
       <!-- ===== Config tab ===== -->
       <section id="tab-config" class="tab-panel">
         <h2>Timing Configuration</h2>
@@ -187,6 +242,31 @@
           </button>
           <span id="ground-save-status" class="save-status"></span>
         </div>
+
+        <hr class="config-divider" />
+
+        <h2>Circuit Phase Durations</h2>
+        <p class="hint">Set the duration for each traffic circuit phase (mm:ss).</p>
+        <table class="config-table">
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Minutes</th>
+              <th>Seconds</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody id="circuit-config-body">
+            <!-- filled by JS -->
+          </tbody>
+        </table>
+        <div class="controls">
+          <button id="btn-circuit-save">Save</button>
+          <button id="btn-circuit-defaults" class="secondary">
+            Reset to defaults
+          </button>
+          <span id="circuit-save-status" class="save-status"></span>
+        </div>
       </section>
     </main>
 
@@ -196,6 +276,8 @@
     <script src="js/airport.js"></script>
     <script src="js/ground-sim.js"></script>
     <script src="js/compare.js"></script>
+    <script src="js/circuit.js"></script>
+    <script src="js/circuit-compare.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

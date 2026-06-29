@@ -111,3 +111,52 @@ function loadGroundPhases() {
 function saveGroundPhases(arr) {
   localStorage.setItem(GROUND_STORAGE_KEY, JSON.stringify(arr));
 }
+
+/* ---- Traffic circuit phases (training pattern at VTCC) ---- */
+
+const CIRCUIT_STORAGE_KEY = "ojtibrief.circuit";
+const CIRCUIT_ANCHOR_NM = 15;
+
+const DEFAULT_CIRCUIT_PHASES = [
+  { id: "downwind",  label: "Downwind Leg",  duration: 60 },
+  { id: "base",      label: "Base Leg",      duration: 60 },
+  { id: "final",     label: "Final Leg",     duration: 60 },
+  { id: "upwind",    label: "Upwind Leg",    duration: 60 },
+  { id: "crosswind", label: "Crosswind Leg", duration: 60 },
+];
+
+function cloneCircuitDefaults() {
+  return DEFAULT_CIRCUIT_PHASES.map(function (p) {
+    return { id: p.id, label: p.label, duration: p.duration };
+  });
+}
+
+function isValidCircuitPhases(arr) {
+  if (!Array.isArray(arr) || arr.length !== DEFAULT_CIRCUIT_PHASES.length) return false;
+  return arr.every(function (p, i) {
+    return p &&
+      p.id === DEFAULT_CIRCUIT_PHASES[i].id &&
+      typeof p.duration === "number" &&
+      isFinite(p.duration) &&
+      p.duration >= 0;
+  });
+}
+
+function loadCircuitPhases() {
+  try {
+    var raw = localStorage.getItem(CIRCUIT_STORAGE_KEY);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (isValidCircuitPhases(parsed)) {
+        return parsed.map(function (p, i) {
+          return { id: p.id, label: DEFAULT_CIRCUIT_PHASES[i].label, duration: p.duration };
+        });
+      }
+    }
+  } catch (e) { /* fall through */ }
+  return cloneCircuitDefaults();
+}
+
+function saveCircuitPhases(arr) {
+  localStorage.setItem(CIRCUIT_STORAGE_KEY, JSON.stringify(arr));
+}

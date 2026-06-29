@@ -110,7 +110,7 @@ const Compare = (function () {
   function toggleCorrelation() {
     var panel = document.getElementById("cmp-correlation");
     var btn = document.getElementById("btn-cmp-toggle");
-    var layout = document.querySelector(".compare-layout");
+    var layout = document.querySelector("#tab-compare .compare-layout");
     var open = panel.classList.toggle("open");
     layout.classList.toggle("drawer-open", open);
     btn.textContent = open ? "Close" : "Table";

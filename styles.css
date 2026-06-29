@@ -315,3 +315,19 @@ table { border-collapse: collapse; width: 100%; }
 .compare-table tbody tr { cursor: pointer; }
 .compare-table tbody tr:hover { background: #16201b; }
 .compare-table tr.current { background: var(--highlight); color: var(--accent); font-weight: 700; }
+
+/* ---- Circuit tab ---- */
+#tab-circuit { text-align: left; }
+#tab-circuit > * { display: block; text-align: left; }
+
+#circuit-scope {
+  background: radial-gradient(circle at center, #0c1410 0%, #060a08 100%);
+  border: 1px solid var(--scope-dim);
+  border-radius: 50%;
+}
+
+#circuit-pattern {
+  background: #0a100c;
+  border: 1px solid var(--scope-dim);
+  border-radius: 8px;
+}

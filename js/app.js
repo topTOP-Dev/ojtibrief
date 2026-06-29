@@ -142,6 +142,70 @@ function initGroundConfig() {
   });
 }
 
+/* ---- Circuit config editor ---- */
+
+function buildCircuitConfigTable(phases) {
+  const body = document.getElementById("circuit-config-body");
+  body.innerHTML = "";
+  phases.forEach((phase, i) => {
+    const mins = Math.floor(phase.duration / 60);
+    const secs = phase.duration % 60;
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td>" + phase.label + "</td>" +
+      '<td><input type="number" min="0" data-cidx="' + i + '" data-part="min" value="' + mins + '"></td>' +
+      '<td><input type="number" min="0" max="59" data-cidx="' + i + '" data-part="sec" value="' + secs + '"></td>' +
+      '<td class="ttt" data-cidx="' + i + '">' + formatMMSS(phase.duration) + "</td>";
+    body.appendChild(tr);
+  });
+
+  body.querySelectorAll("input").forEach((inp) => {
+    inp.addEventListener("input", () => {
+      const idx = inp.dataset.cidx;
+      const dur = readCircuitRowSeconds(idx);
+      body.querySelector('.ttt[data-cidx="' + idx + '"]').textContent = formatMMSS(dur);
+    });
+  });
+}
+
+function readCircuitRowSeconds(idx) {
+  const body = document.getElementById("circuit-config-body");
+  const min = parseInt(body.querySelector('input[data-cidx="' + idx + '"][data-part="min"]').value, 10) || 0;
+  const sec = parseInt(body.querySelector('input[data-cidx="' + idx + '"][data-part="sec"]').value, 10) || 0;
+  return Math.max(0, min) * 60 + Math.max(0, sec);
+}
+
+function collectCircuitConfig() {
+  const base = CircuitCompare.getPhases();
+  return base.map((phase, i) => ({ id: phase.id, label: phase.label, duration: readCircuitRowSeconds(i) }));
+}
+
+function flashCircuitStatus(msg) {
+  const el = document.getElementById("circuit-save-status");
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ""; }, 2000);
+}
+
+function initCircuitConfig() {
+  buildCircuitConfigTable(CircuitCompare.getPhases());
+
+  document.getElementById("btn-circuit-save").addEventListener("click", () => {
+    const updated = collectCircuitConfig();
+    saveCircuitPhases(updated);
+    CircuitCompare.setPhases(updated);
+    buildCircuitConfigTable(updated);
+    flashCircuitStatus("Saved ✓");
+  });
+
+  document.getElementById("btn-circuit-defaults").addEventListener("click", () => {
+    const defaults = cloneCircuitDefaults();
+    saveCircuitPhases(defaults);
+    CircuitCompare.setPhases(defaults);
+    buildCircuitConfigTable(defaults);
+    flashCircuitStatus("Reset to defaults");
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initTabs();
   Sim.init();
@@ -149,4 +213,6 @@ document.addEventListener("DOMContentLoaded", () => {
   GroundSim.init();
   initGroundConfig();
   Compare.init();
+  CircuitCompare.init();
+  initCircuitConfig();
 });

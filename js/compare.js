@@ -23,7 +23,7 @@ function interpolateTTT(timings, nm) {
 const Compare = (function () {
   var radarCtx = null;
   var airportCtx = null;
-  var currentIndex = 0;
+  var currentIndex = -1;
 
   function getPhases() { return GroundSim.getPhases(); }
   function getTimings() { return Sim.getTimings(); }
@@ -103,21 +103,23 @@ const Compare = (function () {
   }
 
   function reset() {
-    currentIndex = 0;
+    currentIndex = getPhases().length - 1;
     render();
   }
 
   function toggleCorrelation() {
     var panel = document.getElementById("cmp-correlation");
     var btn = document.getElementById("btn-cmp-toggle");
-    var visible = panel.style.display !== "none";
-    panel.style.display = visible ? "none" : "block";
-    btn.textContent = visible ? "Show Table" : "Hide Table";
+    var layout = document.querySelector(".compare-layout");
+    var open = panel.classList.toggle("open");
+    layout.classList.toggle("drawer-open", open);
+    btn.textContent = open ? "Close" : "Table";
   }
 
   function init() {
     radarCtx = document.getElementById("compare-scope").getContext("2d");
     airportCtx = document.getElementById("compare-airport").getContext("2d");
+    currentIndex = getPhases().length - 1;
     document.getElementById("btn-cmp-next").addEventListener("click", next);
     document.getElementById("btn-cmp-prev").addEventListener("click", prev);
     document.getElementById("btn-cmp-reset").addEventListener("click", reset);

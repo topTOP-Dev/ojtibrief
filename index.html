@@ -98,45 +98,44 @@
                 <canvas id="compare-airport" width="600" height="600"></canvas>
               </div>
             </div>
-            </div>
-
-          <aside class="compare-side">
-            <div class="controls" style="margin-bottom: 14px">
+            <div class="controls" style="margin-top: 14px; justify-content: center">
               <button id="btn-cmp-prev">&laquo; Previous</button>
               <button id="btn-cmp-next">Next &raquo;</button>
               <button id="btn-cmp-reset" class="secondary">Reset</button>
-              <button id="btn-cmp-toggle" class="secondary">Show Table</button>
             </div>
-            <div id="cmp-correlation" style="display: none">
-              <h2>Arrival / Departure Correlation</h2>
-              <div class="compare-readout">
-                <div>
-                  <span class="label">In-flight</span>
-                  <span id="cmp-inflight-nm">40.0 NM</span>
-                  <span id="cmp-inflight-ttt" style="margin-left: 8px">T-8:00</span>
-                </div>
-                <div>
-                  <span class="label">Ground</span>
-                  <span id="cmp-ground-phase">Push Back</span>
-                  <span id="cmp-ground-dur" style="margin-left: 8px">3:00</span>
-                </div>
-              </div>
-              <table class="compare-table">
-                <thead>
-                  <tr>
-                    <th>Ground Phase</th>
-                    <th>Duration</th>
-                    <th>In-flight</th>
-                    <th>TTD</th>
-                  </tr>
-                </thead>
-                <tbody id="cmp-table-body">
-                  <!-- filled by JS -->
-                </tbody>
-              </table>
-            </div>
-          </aside>
+          </div>
         </div>
+
+        <button id="btn-cmp-toggle" class="cmp-toggle-btn">Table</button>
+
+        <aside id="cmp-correlation" class="compare-side cmp-drawer">
+          <h2>Arrival / Departure Correlation</h2>
+          <div class="compare-readout">
+            <div>
+              <span class="label">In-flight</span>
+              <span id="cmp-inflight-nm">40.0 NM</span>
+              <span id="cmp-inflight-ttt" style="margin-left: 8px">T-8:00</span>
+            </div>
+            <div>
+              <span class="label">Ground</span>
+              <span id="cmp-ground-phase">Push Back</span>
+              <span id="cmp-ground-dur" style="margin-left: 8px">3:00</span>
+            </div>
+          </div>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Ground Phase</th>
+                <th>Duration</th>
+                <th>In-flight</th>
+                <th>TTD</th>
+              </tr>
+            </thead>
+            <tbody id="cmp-table-body">
+              <!-- filled by JS -->
+            </tbody>
+          </table>
+        </aside>
       </section>
 
       <!-- ===== Config tab ===== -->

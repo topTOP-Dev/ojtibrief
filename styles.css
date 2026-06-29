@@ -191,12 +191,48 @@ table { border-collapse: collapse; width: 100%; }
   flex-wrap: wrap;
   align-items: flex-start;
   width: 100%;
+  transition: padding-right 0.25s ease;
+}
+
+.compare-layout.drawer-open {
+  padding-right: 350px;
 }
 
 .compare-canvas-wrap {
   flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cmp-toggle-btn {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  padding: 14px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px 0 0 6px;
+  z-index: 90;
+  letter-spacing: 1px;
+}
+
+.cmp-drawer {
+  position: fixed;
+  right: -360px;
+  top: 50px;
+  width: 340px;
+  height: calc(100vh - 50px);
+  overflow-y: auto;
+  border-radius: 8px 0 0 8px;
+  z-index: 89;
+  transition: right 0.25s ease;
+}
+
+.cmp-drawer.open {
+  right: 0;
 }
 
 .compare-canvas-pair {

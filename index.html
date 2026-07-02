@@ -14,6 +14,7 @@
         <button class="tab-btn" data-tab="ground">Ground</button>
         <button class="tab-btn" data-tab="compare">Mix Mode</button>
         <button class="tab-btn" data-tab="circuit">Circuit</button>
+        <button class="tab-btn" data-tab="brief">Brief</button>
         <button class="tab-btn" data-tab="config">Config</button>
       </nav>
     </header>
@@ -99,7 +100,10 @@
                 <canvas id="compare-airport" width="600" height="600"></canvas>
               </div>
             </div>
-            <div class="controls" style="margin-top: 14px; justify-content: center">
+            <div
+              class="controls"
+              style="margin-top: 14px; justify-content: center"
+            >
               <button id="btn-cmp-prev">&laquo; Previous</button>
               <button id="btn-cmp-next">Next &raquo;</button>
               <button id="btn-cmp-reset" class="secondary">Reset</button>
@@ -153,7 +157,10 @@
                 <canvas id="circuit-pattern" width="600" height="600"></canvas>
               </div>
             </div>
-            <div class="controls" style="margin-top: 14px; justify-content: center">
+            <div
+              class="controls"
+              style="margin-top: 14px; justify-content: center"
+            >
               <button id="btn-cir-prev">&laquo; Previous</button>
               <button id="btn-cir-next">Next &raquo;</button>
               <button id="btn-cir-reset" class="secondary">Reset</button>
@@ -191,6 +198,27 @@
             </tbody>
           </table>
         </aside>
+      </section>
+
+      <!-- ===== Brief tab ===== -->
+      <section id="tab-brief" class="tab-panel">
+        <div class="brief-layout">
+          <div class="brief-deck-bar">
+            <label for="brief-deck-select">Briefing:</label>
+            <select id="brief-deck-select" class="brief-deck-select"></select>
+          </div>
+          <div class="brief-nav">
+            <button id="btn-brief-prev">&laquo; Prev</button>
+            <span id="brief-slide-num" class="brief-slide-counter">— / —</span>
+            <button id="btn-brief-next">Next &raquo;</button>
+          </div>
+
+          <div id="brief-slide-area" class="brief-slide-area">
+            <div id="brief-slide" class="brief-slide">
+              <p class="brief-error">Loading briefing slides…</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- ===== Config tab ===== -->
@@ -246,7 +274,9 @@
         <hr class="config-divider" />
 
         <h2>Circuit Phase Durations</h2>
-        <p class="hint">Set the duration for each traffic circuit phase (mm:ss).</p>
+        <p class="hint">
+          Set the duration for each traffic circuit phase (mm:ss).
+        </p>
         <table class="config-table">
           <thead>
             <tr>
@@ -278,6 +308,7 @@
     <script src="js/compare.js"></script>
     <script src="js/circuit.js"></script>
     <script src="js/circuit-compare.js"></script>
+    <script src="js/brief.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

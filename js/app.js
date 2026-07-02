@@ -215,4 +215,5 @@ document.addEventListener("DOMContentLoaded", () => {
   Compare.init();
   CircuitCompare.init();
   initCircuitConfig();
+  Brief.init();
 });

@@ -341,7 +341,7 @@ table { border-collapse: collapse; width: 100%; }
   flex-direction: column;
   gap: 12px;
   height: calc(100vh - 120px);
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -492,6 +492,7 @@ table { border-collapse: collapse; width: 100%; }
   gap: 20px;
   flex-shrink: 0;
   padding-top: 4px;
+  margin: 10px
 }
 
 .brief-slide-counter {

@@ -18,6 +18,8 @@ const Brief = (function () {
     return esc(text)
       .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g,
         '<img class="brief-img" src="$2" alt="$1">')
+      .replace(/\[[xX]\]/g, '<input type="checkbox" class="brief-check" checked>')
+      .replace(/\[ ?\]/g, '<input type="checkbox" class="brief-check">')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')
       .replace(/`(.+?)`/g, '<code>$1</code>');

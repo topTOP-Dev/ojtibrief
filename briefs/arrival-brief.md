@@ -15,10 +15,17 @@
 
 ## Example phraseologies:
 
-- ** Join Right Downwind Runway 36 ** , Wind 2-8-0 degrees 5 khots, QNH 1-0-0-5. Expect Number 2 after traffic A320 20 NM.
-- ** Join 5 NM Initial ** , Wind 2-8-0 degrees 5 khots, QNH 1-0-0-5. Report 5 NM Initial.
-- ** Join Helicopter Route at San Klang** , 1 600 feet, Report over San Klang.
-- After San Klang, **Join Right Downwind Runway 36 (or Join 1 mile east of aerodrome)**, Standby for crossing runway.
+> ** Join Right Downwind Runway 36 ** , Wind 2-8-0 degrees 5 khots, QNH 1-0-0-5. Expect Number 2 after traffic A320 20 NM.
+
+> ** Join 5 NM Initial ** , Wind 2-8-0 degrees 5 khots, QNH 1-0-0-5. Report 5 NM Initial.
+
+> ** Join Helicopter Route at San Klang** , 1 600 feet, Report over San Klang.
+
+> ** Join Right Downwind Runway 36 and Hold **, Wind, QNH.
+
+> ** Orbit Left on Right Downwind** , expect Number 3 after traffic A333 30 NM.
+
+> After San Klang, **Join Right Downwind Runway 36 (or Join 1 mile east of aerodrome)**, Standby for crossing runway.
 
 ---
 
@@ -38,6 +45,8 @@
 
 # Clearance to land
 
+## Prior to issuing landing clearance the ATCOs shall scan, visually, the runway to be used in accordance with the Working Instruction of Scanning the Vicinity of Aerodrome and Manoeuvring Area
+
 ## An aircraft may be cleared to land when there is reasonable assurance that the separation will exist when the aircraft crosses ** the runway threshold **
 
 ## Clearance to land shall not be issued before:
@@ -49,7 +58,7 @@
 - on base leg; or
 - on final
 
-Observation by radar satisfies th sighting requirement.
+## Observation by radar satisfies th sighting requirement.
 
 ## When the landing area is occupied by another aircraft or is obstructed, arriving aircraft may be issued with a clearance to:
 
@@ -58,5 +67,4 @@ Observation by radar satisfies th sighting requirement.
 
 ## Missed Approach Procedures
 
-- [MATS II, 6.2] TWR shall ensure that the missed approach aircraft is separated from
-  all flights operating in aerodrome traffic circuit. Once upon local flights are being carried out, the phraseology described below should be given to the aircraft which suspects to make or make missed approach: ** CONTINUE RUNWAY HEADING TO 4 000 FEET **
+- [MATS II, 6.2] TWR shall ensure that the missed approach aircraft is separated from all flights operating in aerodrome traffic circuit. Once upon local flights are being carried out, the phraseology described below should be given to the aircraft which suspects to make or make missed approach: ** CONTINUE RUNWAY HEADING TO 4 000 FEET **

@@ -1,4 +1,5 @@
 [
+  { "title": "Departure", "file": "briefs/departure-brief.md" },
   { "title": "Arrival", "file": "briefs/arrival-brief.md" },
   { "title": "Inbound Sequence", "file": "briefs/inbound-sequence.md" },
   { "title": "Circuit Training", "file": "briefs/circuit-training.md" }

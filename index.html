@@ -8,12 +8,13 @@
   </head>
   <body>
     <header class="app-header">
-      <h1>ATC Radar Briefing</h1>
+      <h1>ATC Chiang Mai Tower Briefing</h1>
       <nav class="tabs">
         <button class="tab-btn active" data-tab="sim">Local</button>
         <button class="tab-btn" data-tab="ground">Ground</button>
         <button class="tab-btn" data-tab="compare">Mix Mode</button>
         <button class="tab-btn" data-tab="circuit">Circuit</button>
+        <button class="tab-btn" data-tab="break">Overhead</button>
         <button class="tab-btn" data-tab="brief">Brief</button>
         <button class="tab-btn" data-tab="config">Config</button>
       </nav>
@@ -200,6 +201,63 @@
         </aside>
       </section>
 
+      <!-- ===== Break tab ===== -->
+      <section id="tab-break" class="tab-panel">
+        <div class="compare-layout">
+          <div class="compare-canvas-wrap">
+            <div class="compare-canvas-pair">
+              <div class="compare-pane">
+                <span class="pane-label">In-flight (Local)</span>
+                <canvas id="break-scope" width="600" height="600"></canvas>
+              </div>
+              <div class="compare-pane">
+                <span class="pane-label">Overhead Approach</span>
+                <canvas id="break-pattern" width="600" height="600"></canvas>
+              </div>
+            </div>
+            <div
+              class="controls"
+              style="margin-top: 14px; justify-content: center"
+            >
+              <button id="btn-brk-prev">&laquo; Previous</button>
+              <button id="btn-brk-next">Next &raquo;</button>
+              <button id="btn-brk-reset" class="secondary">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-brk-toggle" class="cmp-toggle-btn">Table</button>
+
+        <aside id="brk-correlation" class="compare-side cmp-drawer">
+          <h2>In-flight / Break Correlation</h2>
+          <div class="compare-readout">
+            <div>
+              <span class="label">In-flight</span>
+              <span id="brk-inflight-nm">20.0 NM</span>
+              <span id="brk-inflight-ttt" style="margin-left: 8px">T-4:00</span>
+            </div>
+            <div>
+              <span class="label">Break</span>
+              <span id="brk-pattern-phase">Initial → Break</span>
+              <span id="brk-pattern-dur" style="margin-left: 8px">1:00</span>
+            </div>
+          </div>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Break Phase</th>
+                <th>Duration</th>
+                <th>In-flight</th>
+                <th>TTD</th>
+              </tr>
+            </thead>
+            <tbody id="brk-table-body">
+              <!-- filled by JS -->
+            </tbody>
+          </table>
+        </aside>
+      </section>
+
       <!-- ===== Brief tab ===== -->
       <section id="tab-brief" class="tab-panel">
         <div class="brief-layout">
@@ -297,6 +355,33 @@
           </button>
           <span id="circuit-save-status" class="save-status"></span>
         </div>
+
+        <hr class="config-divider" />
+
+        <h2>Break Phase Durations</h2>
+        <p class="hint">
+          Set the duration for each military overhead-break phase (mm:ss).
+        </p>
+        <table class="config-table">
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Minutes</th>
+              <th>Seconds</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody id="break-config-body">
+            <!-- filled by JS -->
+          </tbody>
+        </table>
+        <div class="controls">
+          <button id="btn-break-save">Save</button>
+          <button id="btn-break-defaults" class="secondary">
+            Reset to defaults
+          </button>
+          <span id="break-save-status" class="save-status"></span>
+        </div>
       </section>
     </main>
 
@@ -308,6 +393,8 @@
     <script src="js/compare.js"></script>
     <script src="js/circuit.js"></script>
     <script src="js/circuit-compare.js"></script>
+    <script src="js/break-pattern.js"></script>
+    <script src="js/break-compare.js"></script>
     <script src="js/brief.js"></script>
     <script src="js/app.js"></script>
   </body>

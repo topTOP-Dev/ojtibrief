@@ -160,3 +160,51 @@ function loadCircuitPhases() {
 function saveCircuitPhases(arr) {
   localStorage.setItem(CIRCUIT_STORAGE_KEY, JSON.stringify(arr));
 }
+
+/* ---- Military overhead-break phases (initial → break → land at VTCC) ---- */
+
+const BREAK_STORAGE_KEY = "ojtibrief.break";
+const BREAK_ANCHOR_NM = 20;
+
+const DEFAULT_BREAK_PHASES = [
+  { id: "initial", label: "Initial → Break", duration: 60 },
+  { id: "turn180", label: "180° Turn",       duration: 120 },
+  { id: "base",    label: "Base Leg",        duration: 30 },
+  { id: "landing", label: "Landing",         duration: 60 },
+];
+
+function cloneBreakDefaults() {
+  return DEFAULT_BREAK_PHASES.map(function (p) {
+    return { id: p.id, label: p.label, duration: p.duration };
+  });
+}
+
+function isValidBreakPhases(arr) {
+  if (!Array.isArray(arr) || arr.length !== DEFAULT_BREAK_PHASES.length) return false;
+  return arr.every(function (p, i) {
+    return p &&
+      p.id === DEFAULT_BREAK_PHASES[i].id &&
+      typeof p.duration === "number" &&
+      isFinite(p.duration) &&
+      p.duration >= 0;
+  });
+}
+
+function loadBreakPhases() {
+  try {
+    var raw = localStorage.getItem(BREAK_STORAGE_KEY);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (isValidBreakPhases(parsed)) {
+        return parsed.map(function (p, i) {
+          return { id: p.id, label: DEFAULT_BREAK_PHASES[i].label, duration: p.duration };
+        });
+      }
+    }
+  } catch (e) { /* fall through */ }
+  return cloneBreakDefaults();
+}
+
+function saveBreakPhases(arr) {
+  localStorage.setItem(BREAK_STORAGE_KEY, JSON.stringify(arr));
+}

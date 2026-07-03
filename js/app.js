@@ -206,6 +206,70 @@ function initCircuitConfig() {
   });
 }
 
+/* ---- Break config editor ---- */
+
+function buildBreakConfigTable(phases) {
+  const body = document.getElementById("break-config-body");
+  body.innerHTML = "";
+  phases.forEach((phase, i) => {
+    const mins = Math.floor(phase.duration / 60);
+    const secs = phase.duration % 60;
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td>" + phase.label + "</td>" +
+      '<td><input type="number" min="0" data-bidx="' + i + '" data-part="min" value="' + mins + '"></td>' +
+      '<td><input type="number" min="0" max="59" data-bidx="' + i + '" data-part="sec" value="' + secs + '"></td>' +
+      '<td class="ttt" data-bidx="' + i + '">' + formatMMSS(phase.duration) + "</td>";
+    body.appendChild(tr);
+  });
+
+  body.querySelectorAll("input").forEach((inp) => {
+    inp.addEventListener("input", () => {
+      const idx = inp.dataset.bidx;
+      const dur = readBreakRowSeconds(idx);
+      body.querySelector('.ttt[data-bidx="' + idx + '"]').textContent = formatMMSS(dur);
+    });
+  });
+}
+
+function readBreakRowSeconds(idx) {
+  const body = document.getElementById("break-config-body");
+  const min = parseInt(body.querySelector('input[data-bidx="' + idx + '"][data-part="min"]').value, 10) || 0;
+  const sec = parseInt(body.querySelector('input[data-bidx="' + idx + '"][data-part="sec"]').value, 10) || 0;
+  return Math.max(0, min) * 60 + Math.max(0, sec);
+}
+
+function collectBreakConfig() {
+  const base = BreakCompare.getPhases();
+  return base.map((phase, i) => ({ id: phase.id, label: phase.label, duration: readBreakRowSeconds(i) }));
+}
+
+function flashBreakStatus(msg) {
+  const el = document.getElementById("break-save-status");
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ""; }, 2000);
+}
+
+function initBreakConfig() {
+  buildBreakConfigTable(BreakCompare.getPhases());
+
+  document.getElementById("btn-break-save").addEventListener("click", () => {
+    const updated = collectBreakConfig();
+    saveBreakPhases(updated);
+    BreakCompare.setPhases(updated);
+    buildBreakConfigTable(updated);
+    flashBreakStatus("Saved ✓");
+  });
+
+  document.getElementById("btn-break-defaults").addEventListener("click", () => {
+    const defaults = cloneBreakDefaults();
+    saveBreakPhases(defaults);
+    BreakCompare.setPhases(defaults);
+    buildBreakConfigTable(defaults);
+    flashBreakStatus("Reset to defaults");
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initTabs();
   Sim.init();
@@ -215,5 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
   Compare.init();
   CircuitCompare.init();
   initCircuitConfig();
+  BreakCompare.init();
+  initBreakConfig();
   Brief.init();
 });

@@ -3,6 +3,12 @@
 const CALLSIGN = "TRN001";
 const INBOUND_BEARING_DEG = 180; // straight-in from the south, flying north toward center
 
+/* Named fixes along the inbound radial (NM from touchdown). */
+const RADIAL_FIXES = [
+  { name: "RIGTA", nm: 20 },
+  { name: "LASOX", nm: 10 },
+];
+
 /* Returns canvas {x,y} for a point at `nm` along the inbound radial. */
 function radialPoint(cx, cy, pxPerNm, nm) {
   const rad = ((INBOUND_BEARING_DEG - 90) * Math.PI) / 180; // 0deg = up
@@ -76,6 +82,28 @@ function drawScope(ctx, timings, currentIndex, override) {
   ctx.lineTo(cx, cy);
   ctx.stroke();
   ctx.setLineDash([]);
+
+  // --- named fixes on the inbound radial ---
+  ctx.textBaseline = "middle";
+  RADIAL_FIXES.forEach((fix) => {
+    const fp = radialPoint(cx, cy, pxPerNm, fix.nm);
+    // waypoint triangle
+    ctx.strokeStyle = "rgba(120, 210, 230, 0.9)";
+    ctx.fillStyle = "rgba(120, 210, 230, 0.25)";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(fp.x, fp.y - 6);
+    ctx.lineTo(fp.x + 5, fp.y + 4);
+    ctx.lineTo(fp.x - 5, fp.y + 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // name label to the left of the fix
+    ctx.fillStyle = "rgba(160, 225, 240, 0.95)";
+    ctx.font = "bold 11px 'Segoe UI', sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(fix.name, fp.x - 10, fp.y);
+  });
 
   // --- airport / center mark ---
   ctx.fillStyle = "#38e08a";

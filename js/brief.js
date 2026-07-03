@@ -16,6 +16,8 @@ const Brief = (function () {
 
   function inlineMd(text) {
     return esc(text)
+      .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g,
+        '<img class="brief-img" src="$2" alt="$1">')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')
       .replace(/`(.+?)`/g, '<code>$1</code>');

@@ -463,6 +463,15 @@ table { border-collapse: collapse; width: 100%; }
   margin: 22px 0;
 }
 
+.brief-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 18px auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
 .brief-table {
   width: 100%;
   border-collapse: collapse;

@@ -1,10 +1,21 @@
 # Control of Departing Aircraft
 
+## Information provided to arrival
+
+1. Runway to be used
+2. Surface wind direction and speed, including significant variations therefrom.
+3. QNH
+4. Air Temparature for the runway to be used
+5. Visibility, if less than 10 km
+6. The correct time.
+
 ## Standard Clearance Departure
 
 ### Example phraseologies:
 
-> Cleared to Suvarnabhumi Aerodrome via **PANTA2N** departure, Flight Plan Route, 11 000 FEET, Squawk 4-4-4-4, [CTOT or TSAT].
+> **Chiang Mai Ground:** Cleared to Suvarnabhumi Aerodrome via **PANTA2N** departure, Flight Plan Route, 11 000 FEET, Squawk 4-4-4-4, [CTOT or TSAT].
+> **Pilot:** (Readback)
+> **Chiang Mai Ground:** Correct, Departure Runway 36, QNH 1-0-0-7, Time (correct time), [CTOT or TSAT].
 
 ## VFR Traffic Information
 

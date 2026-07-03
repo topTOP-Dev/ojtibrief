@@ -281,5 +281,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initCircuitConfig();
   BreakCompare.init();
   initBreakConfig();
+  ADA.init();
   Brief.init();
 });

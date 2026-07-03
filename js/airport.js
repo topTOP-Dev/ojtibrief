@@ -13,7 +13,8 @@ const PHASE_POSITIONS = [
   { x: 220, y: 300 },  // Rolling — heading north up the runway
 ];
 
-function drawAirport(ctx, phases, currentIndex) {
+/* Draws the airport diagram (runway, taxiways, apron) but no aircraft. */
+function drawAirportBase(ctx) {
   const w = ctx.canvas.width;
   const h = ctx.canvas.height;
 
@@ -183,21 +184,23 @@ function drawAirport(ctx, phases, currentIndex) {
   ctx.moveTo(compassX, compassY - 10);
   ctx.lineTo(compassX + 4, compassY - 4);
   ctx.stroke();
+}
 
-  // --- aircraft blip at current phase ---
-  const phase = phases[currentIndex];
-  const pos = PHASE_POSITIONS[currentIndex];
+/* Draws a single ground blip + labelled data tag on the airport diagram.
+ * `side` places the tag ("right" default, "left" to avoid the edge). */
+function drawAirportBlip(ctx, pos, title, subtitle, side, color) {
+  color = color || "#9dffce";
+  const left = side === "left";
 
-  ctx.fillStyle = "#9dffce";
-  ctx.shadowColor = "#38e08a";
+  ctx.fillStyle = color;
+  ctx.shadowColor = color;
   ctx.shadowBlur = 10;
   ctx.beginPath();
   ctx.arc(pos.x, pos.y, 6, 0, Math.PI * 2);
   ctx.fill();
   ctx.shadowBlur = 0;
 
-  // leader line + data tag
-  const tagX = pos.x + 20;
+  const tagX = left ? pos.x - 20 : pos.x + 20;
   const tagY = pos.y - 30;
   ctx.strokeStyle = "rgba(157, 255, 206, 0.7)";
   ctx.lineWidth = 1;
@@ -206,11 +209,26 @@ function drawAirport(ctx, phases, currentIndex) {
   ctx.lineTo(tagX, tagY + 16);
   ctx.stroke();
 
-  ctx.textAlign = "left";
+  ctx.textAlign = left ? "right" : "left";
+  ctx.textBaseline = "middle";
   ctx.fillStyle = "#c9ffe4";
   ctx.font = "bold 12px 'Segoe UI', sans-serif";
-  ctx.fillText(phase.label, tagX, tagY);
-  ctx.font = "11px 'Segoe UI', sans-serif";
-  ctx.fillStyle = "#9dffce";
-  ctx.fillText("Duration: " + formatMMSS(phase.duration), tagX, tagY + 15);
+  ctx.fillText(title, tagX, tagY);
+  if (subtitle) {
+    ctx.font = "11px 'Segoe UI', sans-serif";
+    ctx.fillStyle = color;
+    ctx.fillText(subtitle, tagX, tagY + 15);
+  }
+}
+
+function drawAirport(ctx, phases, currentIndex) {
+  drawAirportBase(ctx);
+  const phase = phases[currentIndex];
+  drawAirportBlip(
+    ctx,
+    PHASE_POSITIONS[currentIndex],
+    phase.label,
+    "Duration: " + formatMMSS(phase.duration),
+    "right"
+  );
 }

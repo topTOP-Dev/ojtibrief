@@ -13,6 +13,7 @@
         <button class="tab-btn active" data-tab="sim">Local</button>
         <button class="tab-btn" data-tab="ground">Ground</button>
         <button class="tab-btn" data-tab="compare">Mix Mode</button>
+        <button class="tab-btn" data-tab="ada">A-D-A</button>
         <button class="tab-btn" data-tab="circuit">Circuit</button>
         <button class="tab-btn" data-tab="break">Overhead</button>
         <button class="tab-btn" data-tab="brief">Brief</button>
@@ -258,6 +259,65 @@
         </aside>
       </section>
 
+      <!-- ===== Arrival · Departure · Arrival tab ===== -->
+      <section id="tab-ada" class="tab-panel">
+        <div class="compare-layout">
+          <div class="compare-canvas-wrap">
+            <div class="compare-canvas-pair">
+              <div class="compare-pane">
+                <span class="pane-label">Arrivals (Radar)</span>
+                <canvas id="ada-scope" width="600" height="600"></canvas>
+              </div>
+              <div class="compare-pane">
+                <span class="pane-label">Departure (Ground)</span>
+                <canvas id="ada-airport" width="600" height="600"></canvas>
+              </div>
+            </div>
+            <div
+              class="controls"
+              style="margin-top: 14px; justify-content: center"
+            >
+              <button id="btn-ada-prev">&laquo; Previous</button>
+              <button id="btn-ada-next">Next &raquo;</button>
+              <button id="btn-ada-reset" class="secondary">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-ada-toggle" class="cmp-toggle-btn">Table</button>
+
+        <aside id="ada-correlation" class="compare-side cmp-drawer">
+          <h2>Arrival · Departure · Arrival</h2>
+          <div class="compare-readout">
+            <div>
+              <span class="label">Arrival 1</span>
+              <span id="ada-arr1">5 NM final</span>
+            </div>
+            <div>
+              <span class="label">Departure</span>
+              <span id="ada-dep">Holding Point</span>
+            </div>
+            <div>
+              <span class="label">Arrival 2</span>
+              <span id="ada-arr2">RIGTA (20 NM)</span>
+            </div>
+          </div>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Step</th>
+                <th>Arrival 1</th>
+                <th>Departure</th>
+                <th>Arrival 2</th>
+              </tr>
+            </thead>
+            <tbody id="ada-table-body">
+              <!-- filled by JS -->
+            </tbody>
+          </table>
+        </aside>
+      </section>
+
       <!-- ===== Brief tab ===== -->
       <section id="tab-brief" class="tab-panel">
         <div class="brief-layout">
@@ -395,6 +455,7 @@
     <script src="js/circuit-compare.js"></script>
     <script src="js/break-pattern.js"></script>
     <script src="js/break-compare.js"></script>
+    <script src="js/ada.js"></script>
     <script src="js/brief.js"></script>
     <script src="js/app.js"></script>
   </body>

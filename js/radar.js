@@ -19,7 +19,9 @@ function radialPoint(cx, cy, pxPerNm, nm) {
   };
 }
 
-function drawScope(ctx, timings, currentIndex, override) {
+/* Draws the scope scene (rings, fixes, radial, center) but no aircraft.
+ * Returns geometry so callers can place their own blips. */
+function drawScopeBase(ctx, timings) {
   const w = ctx.canvas.width;
   const h = ctx.canvas.height;
   const cx = w / 2;
@@ -116,20 +118,25 @@ function drawScope(ctx, timings, currentIndex, override) {
   ctx.arc(cx, cy, 9, 0, Math.PI * 2);
   ctx.stroke();
 
-  // --- aircraft blip at current ring ---
-  const ring = override || timings[currentIndex];
-  const pos = radialPoint(cx, cy, pxPerNm, ring.nm);
+  return { cx, cy, pxPerNm };
+}
 
-  ctx.fillStyle = "#9dffce";
-  ctx.shadowColor = "#38e08a";
+/* Draws a single aircraft blip + labelled data tag on the scope.
+ * `side` places the tag ("right" default, "left" to avoid overlap). */
+function drawScopeBlip(ctx, geom, nm, ttt, callsign, side, color) {
+  color = color || "#9dffce";
+  const pos = radialPoint(geom.cx, geom.cy, geom.pxPerNm, nm);
+  const left = side === "left";
+
+  ctx.fillStyle = color;
+  ctx.shadowColor = color;
   ctx.shadowBlur = 8;
   ctx.beginPath();
   ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
   ctx.fill();
   ctx.shadowBlur = 0;
 
-  // leader line + data tag (offset to the right of the blip)
-  const tagX = pos.x + 18;
+  const tagX = left ? pos.x - 18 : pos.x + 18;
   const tagY = pos.y - 26;
   ctx.strokeStyle = "rgba(157, 255, 206, 0.7)";
   ctx.lineWidth = 1;
@@ -138,12 +145,19 @@ function drawScope(ctx, timings, currentIndex, override) {
   ctx.lineTo(tagX, tagY + 14);
   ctx.stroke();
 
-  ctx.textAlign = "left";
+  ctx.textAlign = left ? "right" : "left";
+  ctx.textBaseline = "middle";
   ctx.fillStyle = "#c9ffe4";
   ctx.font = "bold 12px 'Segoe UI', sans-serif";
-  ctx.fillText(CALLSIGN, tagX, tagY);
+  ctx.fillText(callsign, tagX, tagY);
   ctx.font = "11px 'Segoe UI', sans-serif";
-  ctx.fillStyle = "#9dffce";
-  ctx.fillText(ring.nm + " NM", tagX, tagY + 15);
-  ctx.fillText("T-" + formatMMSS(ring.ttt), tagX, tagY + 30);
+  ctx.fillStyle = color;
+  ctx.fillText(nm + " NM", tagX, tagY + 15);
+  ctx.fillText("T-" + formatMMSS(ttt), tagX, tagY + 30);
+}
+
+function drawScope(ctx, timings, currentIndex, override) {
+  const geom = drawScopeBase(ctx, timings);
+  const ring = override || timings[currentIndex];
+  drawScopeBlip(ctx, geom, ring.nm, ring.ttt, CALLSIGN, "right");
 }

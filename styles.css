@@ -528,6 +528,33 @@ table { border-collapse: collapse; width: 100%; }
 }
 .brief-lb-controls button:hover { background: #22302a; }
 
+.brief-lb-count {
+  align-self: center;
+  margin-right: 6px;
+  font-size: 13px;
+  color: var(--text);
+  opacity: 0.8;
+}
+
+.brief-lb-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+  width: 48px;
+  height: 64px;
+  font-size: 34px;
+  line-height: 1;
+  color: var(--text);
+  background: rgba(26, 36, 29, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.brief-lb-arrow:hover { background: rgba(34, 48, 42, 0.9); }
+.brief-lb-arrow.prev { left: 16px; }
+.brief-lb-arrow.next { right: 16px; }
+
 .brief-table {
   width: 100%;
   border-collapse: collapse;

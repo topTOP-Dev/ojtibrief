@@ -183,16 +183,23 @@ const Brief = (function () {
     overlay.className = 'brief-lightbox';
     overlay.innerHTML =
       '<div class="brief-lb-controls">' +
+      '<span class="brief-lb-count"></span>' +
       '<button type="button" data-lb="out" title="Zoom out">&minus;</button>' +
       '<button type="button" data-lb="reset" title="Reset">1:1</button>' +
       '<button type="button" data-lb="in" title="Zoom in">+</button>' +
       '<button type="button" data-lb="close" title="Close">&times;</button>' +
       '</div>' +
-      '<img class="brief-lb-img" alt="">';
+      '<button type="button" class="brief-lb-arrow prev" data-lb="prev" title="Previous">&lsaquo;</button>' +
+      '<img class="brief-lb-img" alt="">' +
+      '<button type="button" class="brief-lb-arrow next" data-lb="next" title="Next">&rsaquo;</button>';
     document.body.appendChild(overlay);
 
     lb.overlay = overlay;
     lb.img = overlay.querySelector('.brief-lb-img');
+    lb.count = overlay.querySelector('.brief-lb-count');
+    lb.prevBtn = overlay.querySelector('.brief-lb-arrow.prev');
+    lb.nextBtn = overlay.querySelector('.brief-lb-arrow.next');
+    lb.items = []; lb.index = 0;
     lb.scale = 1; lb.tx = 0; lb.ty = 0;
     lb.dragging = false; lb.sx = 0; lb.sy = 0;
 
@@ -217,10 +224,25 @@ const Brief = (function () {
 
     function reset() { lb.scale = 1; lb.tx = 0; lb.ty = 0; apply(); }
 
-    lb.open = function (src, alt) {
-      lb.img.src = src;
-      lb.img.alt = alt || '';
+    function show(i) {
+      var n = lb.items.length;
+      if (!n) return;
+      lb.index = (i + n) % n;
+      var item = lb.items[lb.index];
+      lb.img.src = item.src;
+      lb.img.alt = item.alt || '';
       reset();
+      var multi = n > 1;
+      lb.count.textContent = multi ? (lb.index + 1) + ' / ' + n : '';
+      lb.prevBtn.style.display = multi ? '' : 'none';
+      lb.nextBtn.style.display = multi ? '' : 'none';
+    }
+    lb.next = function () { show(lb.index + 1); };
+    lb.prev = function () { show(lb.index - 1); };
+
+    lb.open = function (items, index) {
+      lb.items = items;
+      show(index || 0);
       overlay.classList.add('open');
     };
     lb.close = function () {
@@ -233,6 +255,8 @@ const Brief = (function () {
       if (action === 'in') zoomAt(1.25, innerWidth / 2, innerHeight / 2);
       else if (action === 'out') zoomAt(0.8, innerWidth / 2, innerHeight / 2);
       else if (action === 'reset') reset();
+      else if (action === 'next') lb.next();
+      else if (action === 'prev') lb.prev();
       else if (action === 'close' || e.target === overlay) lb.close();
     });
 
@@ -264,9 +288,10 @@ const Brief = (function () {
     buildLightbox();
 
     document.getElementById('brief-slide').addEventListener('click', function (e) {
-      if (e.target.classList.contains('brief-img')) {
-        lb.open(e.target.src, e.target.alt);
-      }
+      if (!e.target.classList.contains('brief-img')) return;
+      var imgs = [].slice.call(this.querySelectorAll('.brief-img'));
+      var items = imgs.map(function (im) { return { src: im.src, alt: im.alt }; });
+      lb.open(items, imgs.indexOf(e.target));
     });
 
     document.getElementById('btn-brief-next').addEventListener('click', next);
@@ -279,6 +304,8 @@ const Brief = (function () {
     document.addEventListener('keydown', function (e) {
       if (lb.overlay && lb.overlay.classList.contains('open')) {
         if (e.key === 'Escape') { e.preventDefault(); lb.close(); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); lb.next(); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); lb.prev(); }
         return;
       }
       if (!document.getElementById('tab-brief').classList.contains('active')) return;

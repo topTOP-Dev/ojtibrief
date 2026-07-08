@@ -65,7 +65,7 @@ SSR Code could provide later or use from the TopSky ATC assignment.
 
 [MATS II, 2.5.4, 5) - iii) and iv)]
 
-### To facilitate the efficient flow of traffic, departures with CTOT may be re-sequence with the following conditions:
+### To facilitate the efficient flow of traffic, departures with CTOT may be re-sequenced with the following conditions:
 
 1. All concerned flights must be in issued CTOTs;
 2. As long as concerned flights are in their own CTOT windows. **The ATCOs may re-sequence issuing pushback clearance** which is not along with the order of CTOT.
@@ -163,12 +163,6 @@ To reduce the potential for misunderstanding, the take-off clearance shall inclu
 2. Current position
 3. Direction of flight
 4. Proposed altitude
-
-#### Example phraseology:
-
-> BKP216, **Traffic Helicopter 8 NM North of aerodrome, Northbound, Altitude not above 1 600 FT**, After departure, Climb via SID, remain TWR frequency, (wind), RWY36, Cleared for take-off.
-
-> CAL852, **Traffic AT6 holding on Right Outside Downwind, Altitude 2 100 FT**, After departure, Climb via SID, remain TWR frequency, (wind), RWY36, Cleared for take-off.
 
 ## Separation of departing aircraft
 

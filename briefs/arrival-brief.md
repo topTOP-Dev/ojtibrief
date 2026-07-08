@@ -49,6 +49,10 @@
 2. each aircraft is continuously visible to flight crews of the other aircraft concernedand the pilots thereof report that they can maintain their own separation; or
 3. in the case of one aircraft following another, the flight crew of the succeeding aircraft reports that the other aircraft is in sight and separation can be maintained.
 
+#### Note:
+
+When applying the 3, the ATCOs should consider to instruct the aircraft follows the preceding aircraft not further than 5 NM.
+
 ## Visual Separation
 
 ### [MATS I, 5.9.1.1] Visual separation may be achieved:

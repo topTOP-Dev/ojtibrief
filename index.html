@@ -10,20 +10,20 @@
     <header class="app-header">
       <h1>ATC Chiang Mai Tower Briefing</h1>
       <nav class="tabs">
-        <button class="tab-btn" data-tab="sim">Local</button>
+        <button class="tab-btn active" data-tab="sim">Local</button>
         <button class="tab-btn" data-tab="ground">Ground</button>
         <button class="tab-btn" data-tab="compare">Mix Mode</button>
         <button class="tab-btn" data-tab="ada">A-D-A</button>
         <button class="tab-btn" data-tab="circuit">Circuit</button>
         <button class="tab-btn" data-tab="break">Overhead</button>
-        <button class="tab-btn active" data-tab="brief">Brief</button>
+        <!-- <button class="tab-btn" data-tab="brief">Brief</button> -->
         <button class="tab-btn" data-tab="config">Config</button>
       </nav>
     </header>
 
     <main>
       <!-- ===== Radar Simulation tab ===== -->
-      <section id="tab-sim" class="tab-panel">
+      <section id="tab-sim" class="tab-panel active">
         <div class="sim-layout">
           <div class="scope-wrap">
             <canvas id="scope" width="600" height="600"></canvas>
@@ -319,7 +319,7 @@
       </section>
 
       <!-- ===== Brief tab ===== -->
-      <section id="tab-brief" class="tab-panel active">
+      <section id="tab-brief" class="tab-panel">
         <div class="brief-layout">
           <div class="brief-deck-bar">
             <label for="brief-deck-select">Briefing:</label>

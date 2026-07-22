@@ -60,6 +60,32 @@ body {
   border-color: var(--scope-green);
 }
 
+/* ---- Sub-tabs (RWY 36 / RWY 18 within Mix Mode and A-D-A) ----
+ * Scoped under .tab-panel so they out-specify the broad `.tab-panel > *`
+ * layout rule and reliably hide the inactive sub-panel. */
+.tab-panel > .subtabs { display: flex; gap: 6px; margin-bottom: 16px; }
+
+.subtab-btn {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.subtab-btn:hover { color: var(--text); }
+
+.subtab-btn.active {
+  background: var(--highlight);
+  color: var(--accent);
+  border-color: var(--scope-green);
+}
+
+.tab-panel > .subtab-panel { display: none; text-align: left; }
+.tab-panel > .subtab-panel.active { display: block; }
+
 main { padding: 24px; }
 
 .tab-panel { display: none; text-align: center; }
@@ -183,7 +209,6 @@ table { border-collapse: collapse; width: 100%; }
 
 /* ---- Compare tab ---- */
 #tab-compare { text-align: left; }
-#tab-compare > * { display: block; text-align: left; }
 
 .compare-layout {
   display: flex;
@@ -261,13 +286,17 @@ table { border-collapse: collapse; width: 100%; }
   letter-spacing: 0.5px;
 }
 
-#compare-scope {
+#compare-scope,
+#compare18-scope,
+#ada18-scope {
   background: radial-gradient(circle at center, #0c1410 0%, #060a08 100%);
   border: 1px solid var(--scope-dim);
   border-radius: 50%;
 }
 
-#compare-airport {
+#compare-airport,
+#compare18-airport,
+#ada18-airport {
   background: #0a100c;
   border: 1px solid var(--scope-dim);
   border-radius: 8px;

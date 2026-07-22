@@ -27,7 +27,7 @@ const BreakCompare = (function () {
     var nm = inflightNMAtStep(currentIndex);
     var ttt = interpolateTTT(timings, nm);
 
-    drawScope(radarCtx, timings, 0, { nm: nm, ttt: ttt });
+    drawScope(radarCtx, timings, 0, { nm: nm, ttt: ttt }, { rangeNm: COMPARE_SCOPE_RANGE_NM });
     drawBreak(patternCtx, phases, currentIndex);
 
     var phase = phases[currentIndex];

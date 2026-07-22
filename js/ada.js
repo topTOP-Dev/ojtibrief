@@ -70,7 +70,7 @@ const ADA = (function () {
 
   function renderScope(step) {
     var timings = getTimings();
-    var geom = drawScopeBase(radarCtx, timings);
+    var geom = drawScopeBase(radarCtx, timings, { rangeNm: COMPARE_SCOPE_RANGE_NM });
     // Arrival 2 is always airborne (tag right).
     var t2 = interpolateTTT(timings, step.arr2.air);
     drawScopeBlip(radarCtx, geom, step.arr2.air, t2, "ARR2", "right", ADA_ARR_COLOR);

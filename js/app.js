@@ -13,6 +13,23 @@ function initTabs() {
   });
 }
 
+/* Sub-tabs within a tab panel (e.g. RWY 36 / RWY 18 in Mix Mode and A-D-A). */
+function initSubTabs() {
+  document.querySelectorAll(".subtabs").forEach((bar) => {
+    const btns = bar.querySelectorAll(".subtab-btn");
+    const section = bar.closest(".tab-panel");
+    btns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.subtab;
+        btns.forEach((b) => b.classList.toggle("active", b === btn));
+        section.querySelectorAll(".subtab-panel").forEach((p) => {
+          p.classList.toggle("active", p.id === "sub-" + target);
+        });
+      });
+    });
+  });
+}
+
 /* ---- Config editor ---- */
 
 function buildConfigTable(timings) {
@@ -272,15 +289,18 @@ function initBreakConfig() {
 
 document.addEventListener("DOMContentLoaded", () => {
   initTabs();
+  initSubTabs();
   Sim.init();
   initConfig();
   GroundSim.init();
   initGroundConfig();
   Compare.init();
+  Compare18.init();
   CircuitCompare.init();
   initCircuitConfig();
   BreakCompare.init();
   initBreakConfig();
   ADA.init();
+  ADA18.init();
   Brief.init();
 });

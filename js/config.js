@@ -18,6 +18,9 @@ const DEFAULT_TIMINGS = [
 // Outer scope edge (not configurable, used for scaling).
 const SCOPE_RANGE_NM = 100;
 
+// Zoomed scope edge for the correlation views (Mix Mode, A-D-A, Circuit, Overhead).
+const COMPARE_SCOPE_RANGE_NM = 40;
+
 function cloneDefaults() {
   return DEFAULT_TIMINGS.map((r) => ({ nm: r.nm, ttt: r.ttt }));
 }

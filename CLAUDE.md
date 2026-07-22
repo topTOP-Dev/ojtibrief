@@ -27,4 +27,8 @@ Key data structures:
 - **Timings** (in-flight): `[{ nm, ttt }]` — range in nautical miles and seconds to touchdown. 8 rings from 80 NM down to 5 NM.
 - **Ground phases**: `[{ id, label, duration }]` — 6 departure phases from push back to rolling for take-off.
 
-The Compare tab maps ground elapsed time to an interpolated in-flight position between 40 NM and 4 NM final.
+The Compare tab (RWY 36, `js/compare.js`) maps ground elapsed time to an in-flight final distance using **piecewise (elapsed, NM) anchors** rather than a single linear sweep. Endpoints are push back = 40 NM and rolling for take-off = 4 NM; interior anchors (`COMPARE_ANCHORS`) are keyed to ground-phase `id`s so they follow user-edited durations:
+- start of `taxi` ("Starting Taxi") → arrival at 20 NM final (abeam RIGTA)
+- start of `twy_f` ("Taxi Passing TWY F") → arrival at 15 NM final
+
+This yields a decelerating arrival profile (fast far out, slowing on final). The RWY 18 sub-view (`js/compare18.js`) uses a separate cumulative-track-distance model against `RWY18_TOTAL_NM`.

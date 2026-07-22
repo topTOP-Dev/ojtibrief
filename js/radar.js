@@ -20,15 +20,19 @@ function radialPoint(cx, cy, pxPerNm, nm) {
 }
 
 /* Draws the scope scene (rings, fixes, radial, center) but no aircraft.
- * Returns geometry so callers can place their own blips. */
-function drawScopeBase(ctx, timings) {
+ * Returns geometry so callers can place their own blips.
+ * `opts.radial === false` skips the straight-in inbound radial + its fixes,
+ * so callers (e.g. the RWY 18 dog-leg profile) can draw their own route. */
+function drawScopeBase(ctx, timings, opts) {
+  opts = opts || {};
+  const rangeNm = opts.rangeNm || SCOPE_RANGE_NM; // outer scope edge in NM
   const w = ctx.canvas.width;
   const h = ctx.canvas.height;
   const cx = w / 2;
   const cy = h / 2;
   const margin = 28;
   const maxRadius = Math.min(w, h) / 2 - margin;
-  const pxPerNm = maxRadius / SCOPE_RANGE_NM;
+  const pxPerNm = maxRadius / rangeNm;
 
   ctx.clearRect(0, 0, w, h);
 
@@ -43,18 +47,19 @@ function drawScopeBase(ctx, timings) {
     ctx.stroke();
   }
 
-  // --- outer 100 NM edge ---
+  // --- outer scope edge ---
   ctx.strokeStyle = "rgba(37, 208, 125, 0.35)";
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.arc(cx, cy, SCOPE_RANGE_NM * pxPerNm, 0, Math.PI * 2);
+  ctx.arc(cx, cy, rangeNm * pxPerNm, 0, Math.PI * 2);
   ctx.stroke();
 
-  // --- range rings for each configured NM ---
+  // --- range rings for each configured NM (skip any beyond the scope edge) ---
   ctx.font = "11px 'Segoe UI', sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   timings.forEach((ring) => {
+    if (ring.nm > rangeNm) return;
     const r = ring.nm * pxPerNm;
     ctx.strokeStyle = "rgba(37, 208, 125, 0.22)";
     ctx.lineWidth = 1;
@@ -74,38 +79,40 @@ function drawScopeBase(ctx, timings) {
   ctx.fillText("E", cx + maxRadius + 14, cy);
   ctx.fillText("W", cx - maxRadius - 14, cy);
 
-  // --- inbound radial track (100 NM -> center) ---
-  const start = radialPoint(cx, cy, pxPerNm, SCOPE_RANGE_NM);
-  ctx.strokeStyle = "rgba(56, 224, 138, 0.4)";
-  ctx.setLineDash([6, 6]);
-  ctx.lineWidth = 1.2;
-  ctx.beginPath();
-  ctx.moveTo(start.x, start.y);
-  ctx.lineTo(cx, cy);
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  // --- named fixes on the inbound radial ---
-  ctx.textBaseline = "middle";
-  RADIAL_FIXES.forEach((fix) => {
-    const fp = radialPoint(cx, cy, pxPerNm, fix.nm);
-    // waypoint triangle
-    ctx.strokeStyle = "rgba(120, 210, 230, 0.9)";
-    ctx.fillStyle = "rgba(120, 210, 230, 0.25)";
+  if (opts.radial !== false) {
+    // --- inbound radial track (scope edge -> center) ---
+    const start = radialPoint(cx, cy, pxPerNm, rangeNm);
+    ctx.strokeStyle = "rgba(56, 224, 138, 0.4)";
+    ctx.setLineDash([6, 6]);
     ctx.lineWidth = 1.2;
     ctx.beginPath();
-    ctx.moveTo(fp.x, fp.y - 6);
-    ctx.lineTo(fp.x + 5, fp.y + 4);
-    ctx.lineTo(fp.x - 5, fp.y + 4);
-    ctx.closePath();
-    ctx.fill();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(cx, cy);
     ctx.stroke();
-    // name label to the left of the fix
-    ctx.fillStyle = "rgba(160, 225, 240, 0.95)";
-    ctx.font = "bold 11px 'Segoe UI', sans-serif";
-    ctx.textAlign = "right";
-    ctx.fillText(fix.name, fp.x - 10, fp.y);
-  });
+    ctx.setLineDash([]);
+
+    // --- named fixes on the inbound radial ---
+    ctx.textBaseline = "middle";
+    RADIAL_FIXES.forEach((fix) => {
+      const fp = radialPoint(cx, cy, pxPerNm, fix.nm);
+      // waypoint triangle
+      ctx.strokeStyle = "rgba(120, 210, 230, 0.9)";
+      ctx.fillStyle = "rgba(120, 210, 230, 0.25)";
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(fp.x, fp.y - 6);
+      ctx.lineTo(fp.x + 5, fp.y + 4);
+      ctx.lineTo(fp.x - 5, fp.y + 4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      // name label to the left of the fix
+      ctx.fillStyle = "rgba(160, 225, 240, 0.95)";
+      ctx.font = "bold 11px 'Segoe UI', sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText(fix.name, fp.x - 10, fp.y);
+    });
+  }
 
   // --- airport / center mark ---
   ctx.fillStyle = "#38e08a";
@@ -156,8 +163,8 @@ function drawScopeBlip(ctx, geom, nm, ttt, callsign, side, color) {
   ctx.fillText("T-" + formatMMSS(ttt), tagX, tagY + 30);
 }
 
-function drawScope(ctx, timings, currentIndex, override) {
-  const geom = drawScopeBase(ctx, timings);
+function drawScope(ctx, timings, currentIndex, override, opts) {
+  const geom = drawScopeBase(ctx, timings, opts);
   const ring = override || timings[currentIndex];
   drawScopeBlip(ctx, geom, ring.nm, ring.ttt, CALLSIGN, "right");
 }

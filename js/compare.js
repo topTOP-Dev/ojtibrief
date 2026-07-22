@@ -1,10 +1,17 @@
-/* Compare tab: side-by-side in-flight (from 40 NM) and ground (push back to rolling).
- * Ground push back starts when in-flight is at 40 NM.
- * Ground rolling ends when in-flight reaches 4 NM final.
- * In-flight position is interpolated based on elapsed ground time. */
+/* Compare tab (RWY 36): side-by-side in-flight and ground (push back to rolling).
+ * The arrival profile runs 40 NM (push back) down to 4 NM final (rolling for
+ * take-off), decelerating on final as real traffic does. It is pinned to the
+ * ground sequence at two anchors requested for OJTI briefing:
+ *   - start of "Starting Taxi"      -> arrival at 20 NM final (abeam RIGTA)
+ *   - start of "Taxi Passing TWY F" -> arrival at 15 NM final
+ * Anchors are keyed to phase ids so they track user-edited phase durations. */
 
 const COMPARE_START_NM = 40;
 const COMPARE_END_NM = 4;
+const COMPARE_ANCHORS = [
+  { id: "taxi",  nm: 20 },   // starting to taxi -> 20 NM final (RIGTA)
+  { id: "twy_f", nm: 15 },   // passing TWY F    -> 15 NM final
+];
 
 function interpolateTTT(timings, nm) {
   if (nm >= timings[0].nm) return timings[0].ttt;
@@ -39,12 +46,34 @@ const Compare = (function () {
     return elapsed;
   }
 
+  /* (elapsed seconds, NM) anchors that pin the arrival to the ground sequence.
+   * Push back -> 40 NM, then the requested interior anchors, down to 4 NM at
+   * rolling. Built each call so it follows edited phase durations. */
+  function nmAnchors() {
+    var phases = getPhases();
+    var anchors = [{ e: 0, nm: COMPARE_START_NM }];
+    COMPARE_ANCHORS.forEach(function (a) {
+      var idx = phases.findIndex(function (p) { return p.id === a.id; });
+      if (idx >= 0) anchors.push({ e: elapsedAtStep(idx), nm: a.nm });
+    });
+    anchors.push({ e: totalGroundTime(), nm: COMPARE_END_NM });
+    return anchors;
+  }
+
   function inflightNMAtStep(stepIdx) {
-    var total = totalGroundTime();
-    if (total === 0) return COMPARE_START_NM;
-    var elapsed = elapsedAtStep(stepIdx);
-    var frac = elapsed / total;
-    return COMPARE_START_NM - frac * (COMPARE_START_NM - COMPARE_END_NM);
+    var anchors = nmAnchors();
+    var e = elapsedAtStep(stepIdx);
+    if (e <= anchors[0].e) return anchors[0].nm;
+    var lastA = anchors[anchors.length - 1];
+    if (e >= lastA.e) return lastA.nm;
+    for (var i = 0; i < anchors.length - 1; i++) {
+      if (e >= anchors[i].e && e <= anchors[i + 1].e) {
+        var span = anchors[i + 1].e - anchors[i].e;
+        var frac = span === 0 ? 0 : (e - anchors[i].e) / span;
+        return anchors[i].nm + frac * (anchors[i + 1].nm - anchors[i].nm);
+      }
+    }
+    return lastA.nm;
   }
 
   function render() {
@@ -53,7 +82,7 @@ const Compare = (function () {
     var nm = inflightNMAtStep(currentIndex);
     var ttt = interpolateTTT(timings, nm);
 
-    drawScope(radarCtx, timings, 0, { nm: nm, ttt: ttt });
+    drawScope(radarCtx, timings, 0, { nm: nm, ttt: ttt }, { rangeNm: COMPARE_SCOPE_RANGE_NM });
     drawAirport(airportCtx, phases, currentIndex);
 
     var phase = phases[currentIndex];

@@ -138,7 +138,16 @@ function drawAirportBase(ctx) {
   ctx.lineTo(rwyX + rwyW / 2, twyHY);
   ctx.stroke();
 
-  // --- holding point marking at TWY H (dashed yellow line before runway) ---
+  // --- TWY A (connects parallel taxiway to north end of runway, RWY 18 end) ---
+  const twyAY = 110;
+  ctx.strokeStyle = "rgba(37, 208, 125, 0.2)";
+  ctx.lineWidth = 12;
+  ctx.beginPath();
+  ctx.moveTo(twyParallelX, twyAY);
+  ctx.lineTo(rwyX + rwyW / 2, twyAY);
+  ctx.stroke();
+
+  // --- holding point markings (dashed yellow line before runway) ---
   const hpX = rwyX + rwyW / 2 + 14;
   ctx.strokeStyle = "rgba(255, 200, 50, 0.6)";
   ctx.lineWidth = 2;
@@ -146,6 +155,8 @@ function drawAirportBase(ctx) {
   ctx.beginPath();
   ctx.moveTo(hpX, twyHY - 10);
   ctx.lineTo(hpX, twyHY + 10);
+  ctx.moveTo(hpX, twyAY - 10);
+  ctx.lineTo(hpX, twyAY + 10);
   ctx.stroke();
   ctx.setLineDash([]);
 
@@ -155,7 +166,9 @@ function drawAirportBase(ctx) {
   ctx.textAlign = "center";
   ctx.fillText("TWY F", (twyParallelX + rwyX) / 2, twyFY - 14);
   ctx.fillText("TWY H", (twyParallelX + rwyX) / 2, twyHY - 14);
+  ctx.fillText("TWY A", (twyParallelX + rwyX) / 2, twyAY - 14);
   ctx.fillText("HP", hpX - 14, twyHY + 4);
+  ctx.fillText("HP", hpX - 14, twyAY + 4);
 
   // label for VTCC
   ctx.fillStyle = "rgba(56, 224, 138, 0.5)";
@@ -227,6 +240,29 @@ function drawAirport(ctx, phases, currentIndex) {
   drawAirportBlip(
     ctx,
     PHASE_POSITIONS[currentIndex],
+    phase.label,
+    "Duration: " + formatMMSS(phase.duration),
+    "right"
+  );
+}
+
+/* RWY 18 departure: mirror of the RWY 36 sequence — taxi north up the parallel
+ * to TWY A, line up at the north (18) threshold, roll south. Same phase order. */
+const RWY18_PHASE_POSITIONS = [
+  { x: 450, y: 300 },  // Push Back — at apron/gate
+  { x: 340, y: 300 },  // Starting Taxi — on parallel taxiway
+  { x: 340, y: 200 },  // Taxi (heading north up the parallel toward TWY A)
+  { x: 300, y: 110 },  // At Holding Point — TWY A, near north end of runway
+  { x: 220, y: 90 },   // Line Up — on runway at RWY 18 threshold (north)
+  { x: 220, y: 300 },  // Rolling — heading south down the runway
+];
+
+function drawAirport18(ctx, phases, currentIndex) {
+  drawAirportBase(ctx);
+  const phase = phases[currentIndex];
+  drawAirportBlip(
+    ctx,
+    RWY18_PHASE_POSITIONS[currentIndex],
     phase.label,
     "Duration: " + formatMMSS(phase.duration),
     "right"

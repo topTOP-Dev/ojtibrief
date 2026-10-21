@@ -6,7 +6,7 @@
  * RWY 36 (straight-in):
  *  1. Both airborne : ARR1 at 5 NM, ARR2 at RIGTA (20 NM).
  *  2. ARR1 touchdown: departure at holding point, ARR2 at LASOX (10 NM).
- *  3. DEP line up    : ARR2 at 8 NM while ARR1 is vacating the runway.
+ *  3. DEP line up    : ARR2 at 8 NM while ARR1 vacates the runway via TWY E.
  *  4. DEP roll       : departure commences take-off roll, ARR2 at 4 NM.
  * RWY 18 (dog-leg from the north): same steps, ARR2 at SUSEG → PILEK → 8 → 4 NM
  * track distance to touchdown.
@@ -17,7 +17,9 @@ import { COMPARE_SCOPE_RANGE_NM, formatMMSS, interpolateTTT, tttToNM } from "../
 import { COLORS, byId, canvasCtx } from "../core/canvas";
 import { ease, lerp, pointAlong, smoothCorners, type Ease, type Pose, type Pt } from "../core/path";
 import { Player, type Segment } from "../core/player";
-import { GROUND_ROUTE_18, GROUND_ROUTE_36, drawAirportBase, drawGroundAircraft } from "../draw/airport";
+import {
+  CONNECTOR_Y, GROUND_ROUTE_18, GROUND_ROUTE_36, TWY_E_Y, TWY_P_X, drawAirportBase, drawGroundAircraft,
+} from "../draw/airport";
 import { drawScopeBase, drawTarget, radialPoint, type ScopeGeom } from "../draw/radar";
 import { RWY18_TOTAL_NM, drawRoute18Base, route18Point } from "../draw/radar18";
 import { onStateChange, state } from "../state";
@@ -36,7 +38,7 @@ const STEPS_36: AdaStep[] = [
     dep: { ground: "holding", label: "Holding Point" }, arr2: { air: 20, fix: "RIGTA" } },
   { label: "2 — ARR1 touchdown", arr1: { ground: "touchdown", label: "Touchdown" },
     dep: { ground: "holding", label: "Holding Point" }, arr2: { air: 10, fix: "LASOX" } },
-  { label: "3 — DEP line up", arr1: { ground: "vacating", label: "Vacating" },
+  { label: "3 — DEP line up", arr1: { ground: "vacating", label: "Vacating via TWY E" },
     dep: { ground: "lineup", label: "Line Up" }, arr2: { air: 8 } },
   { label: "4 — DEP take-off roll", arr1: null,
     dep: { ground: "takeoff", label: "Take-off Roll" }, arr2: { air: 4 } },
@@ -74,6 +76,12 @@ const still = (p: Pt, heading: number): Move => ({
 });
 const decel: Ease = (f) => 1 - (1 - f) * (1 - f);
 
+/* After vacating: off TWY E onto TWY P, south to the apron connector, then in. */
+const VACATED: Pt = { x: 288, y: TWY_E_Y };
+const TO_APRON = smoothCorners([
+  VACATED, { x: TWY_P_X, y: TWY_E_Y }, { x: TWY_P_X, y: CONNECTOR_Y }, { x: 400, y: CONNECTOR_Y },
+], 14);
+
 const HOLD36 = GROUND_ROUTE_36.hp_lineup.pts[0];
 const LINEUP36 = GROUND_ROUTE_36.hp_lineup.pts[GROUND_ROUTE_36.hp_lineup.pts.length - 1];
 const HOLD18 = GROUND_ROUTE_18.hp_lineup.pts[0];
@@ -91,8 +99,8 @@ const SCENARIO_36: Scenario = {
   ],
   arr1: [
     { pts: [{ x: 220, y: 640 }, { x: 220, y: 460 }], ease: ease.holdThen(0.75, decel), fadeIn: true },
-    { pts: smoothCorners([{ x: 220, y: 460 }, { x: 220, y: 390 }, { x: 288, y: 390 }], 18), ease: decel },
-    { pts: smoothCorners([{ x: 288, y: 390 }, { x: 340, y: 390 }, { x: 340, y: 420 }], 14), ease: ease.linear, fadeOut: true },
+    { pts: smoothCorners([{ x: 220, y: 460 }, { x: 220, y: TWY_E_Y }, VACATED], 18), ease: decel },
+    { pts: TO_APRON, ease: ease.linear, fadeOut: true },
   ],
 };
 
@@ -108,15 +116,15 @@ const SCENARIO_18: Scenario = {
   ],
   arr1: [
     { pts: [{ x: 220, y: -40 }, { x: 220, y: 150 }], ease: ease.holdThen(0.75, decel), fadeIn: true },
-    { pts: smoothCorners([{ x: 220, y: 150 }, { x: 220, y: 390 }, { x: 288, y: 390 }], 18), ease: decel },
-    { pts: smoothCorners([{ x: 288, y: 390 }, { x: 340, y: 390 }, { x: 340, y: 360 }], 14), ease: ease.linear, fadeOut: true },
+    { pts: smoothCorners([{ x: 220, y: 150 }, { x: 220, y: TWY_E_Y }, VACATED], 18), ease: decel },
+    { pts: TO_APRON, ease: ease.linear, fadeOut: true },
   ],
 };
 
 function arr1Text(step: AdaStep): string {
   if (!step.arr1) return "—";
   if ("air" in step.arr1) return step.arr1.air + " NM final";
-  return step.arr1.label + " (runway)";
+  return step.arr1.label;
 }
 function arr2Text(step: AdaStep): string {
   const s = step.arr2.air + " NM";

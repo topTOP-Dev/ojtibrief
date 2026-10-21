@@ -1,8 +1,9 @@
 /* Simplified Chiang Mai International Airport (VTCC) top-down diagram.
  * Runway 18/36: 18 at the north end, 36 at the south end. Apron on the east.
- * TWY P is the parallel taxiway east of the runway. TWY F links P to the
- * runway mid-south; TWY H (RWY 36 holding point) and TWY A (RWY 18 holding
- * point) link P to the runway ends. */
+ * TWY P is the parallel taxiway east of the runway. TWY E (just north of the
+ * apron connector) is the vacating taxiway for landing traffic. TWY F links P
+ * to the runway mid-south; TWY H (RWY 36 holding point) and TWY A (RWY 18
+ * holding point) link P to the runway ends. */
 
 import type { Phase } from "../config";
 import {
@@ -15,11 +16,12 @@ export const RWY_X = 220;
 const RWY_W = 28;
 const RWY_TOP = 50;
 const RWY_BOT = 550;
-const TWY_P_X = 340;
 const TWY_A_Y = 75;
+export const TWY_E_Y = 255;
 const TWY_F_Y = 390;
 const TWY_H_Y = 525;
-const CONNECTOR_Y = 300;
+export const CONNECTOR_Y = 300;
+export const TWY_P_X = 340;
 const APRON = { x: 410, y: 250, w: 130, h: 100 };
 const HP_X = RWY_X + RWY_W / 2 + 14;
 
@@ -105,6 +107,7 @@ export function drawAirportBase(ctx: CanvasRenderingContext2D, route?: GroundRou
   const twys: [number, number, number, number][] = [
     [TWY_P_X, TWY_A_Y, TWY_P_X, TWY_H_Y],           // TWY P (parallel)
     [APRON.x, CONNECTOR_Y, TWY_P_X, CONNECTOR_Y],    // apron connector
+    [TWY_P_X, TWY_E_Y, RWY_X + RWY_W / 2, TWY_E_Y],  // TWY E (vacating)
     [TWY_P_X, TWY_F_Y, RWY_X + RWY_W / 2, TWY_F_Y],  // TWY F
     [TWY_P_X, TWY_H_Y, RWY_X + RWY_W / 2, TWY_H_Y],  // TWY H
     [TWY_P_X, TWY_A_Y, RWY_X + RWY_W / 2, TWY_A_Y],  // TWY A
@@ -145,6 +148,7 @@ export function drawAirportBase(ctx: CanvasRenderingContext2D, route?: GroundRou
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   const midX = (TWY_P_X + RWY_X + RWY_W / 2) / 2 + 12;
+  ctx.fillText("TWY E", midX, TWY_E_Y - 14);
   ctx.fillText("TWY F", midX, TWY_F_Y - 14);
   ctx.fillText("TWY H", midX, TWY_H_Y - 14);
   ctx.fillText("TWY A", midX, TWY_A_Y + 16);

@@ -6,44 +6,44 @@ to regenerate this file. It lives in public/defaults.md.
 
 ## In-flight Timings
 
-| NM | To touchdown (mm:ss) |
-|---:|---:|
-| 80 | 16:00 |
-| 60 | 12:00 |
-| 40 | 8:00 |
-| 25 | 5:00 |
-| 20 | 4:00 |
-| 10 | 2:00 |
-| 7 | 1:24 |
-| 5 | 1:00 |
+|  NM | To touchdown (mm:ss) |
+| --: | -------------------: |
+|  80 |                16:00 |
+|  60 |                12:00 |
+|  40 |                 8:00 |
+|  25 |                 5:00 |
+|  20 |                 4:00 |
+|  10 |                 2:00 |
+|   7 |                 1:24 |
+|   5 |                 1:00 |
 
 ## Ground Phases
 
-| id | Phase | Duration (mm:ss) |
-|---|---|---:|
-| pushback | Start Push → Push Complete | 3:00 |
-| taxi | Start Taxi → TWY P | 1:00 |
-| twy_p_f | TWY P → TWY F | 1:00 |
-| twy_f_hp | TWY F → Holding Point | 1:00 |
-| hp_lineup | Holding Point → Line Up | 2:00 |
-| lineup_roll | Line Up → Rolling for Take-off | 1:00 |
+| id          | Phase                          | Duration (mm:ss) |
+| ----------- | ------------------------------ | ---------------: |
+| pushback    | Start Push → Push Complete     |             3:00 |
+| taxi        | Start Taxi → TWY P             |             1:00 |
+| twy_p_f     | TWY P → TWY F                  |             1:00 |
+| twy_f_hp    | TWY F → Holding Point          |             1:00 |
+| hp_lineup   | Holding Point → Line Up        |             2:00 |
+| lineup_roll | Line Up → Rolling for Take-off |             1:00 |
 
 ## Circuit Phases
 
-| id | Phase | Duration (mm:ss) |
-|---|---|---:|
-| upwind | Upwind → Crosswind | 1:00 |
-| crosswind | Crosswind → Downwind | 1:00 |
-| downwind | Downwind → Base | 1:00 |
-| base | Base → Final | 0:45 |
-| final | Final → Touchdown | 1:00 |
-| touchdown | Touchdown → Upwind | 0:30 |
+| id        | Phase                | Duration (mm:ss) |
+| --------- | -------------------- | ---------------: |
+| upwind    | Upwind → Crosswind   |             1:00 |
+| crosswind | Crosswind → Downwind |             1:00 |
+| downwind  | Downwind → Base      |             1:00 |
+| base      | Base → Final         |             0:45 |
+| final     | Final → Touchdown    |             0:45 |
+| touchdown | Touchdown → Upwind   |             0:30 |
 
 ## Break Phases
 
-| id | Phase | Duration (mm:ss) |
-|---|---|---:|
-| initial | Initial → Break | 1:00 |
-| turn180 | 180° Turn | 2:00 |
-| base | Base Leg | 0:30 |
-| landing | Landing | 1:00 |
+| id      | Phase           | Duration (mm:ss) |
+| ------- | --------------- | ---------------: |
+| initial | Initial → Break |             1:00 |
+| turn180 | 180° Turn       |             2:00 |
+| base    | Base Leg        |             0:30 |
+| landing | Landing         |             1:00 |

@@ -40,7 +40,7 @@ All drawing is Canvas 2D in a fixed logical 600×600 space; `setupCanvas()` scal
 ## Phase data
 
 - **Timings** (in-flight): `[{ nm, ttt }]`, 8 rings from 80 NM to 5 NM.
-- **Ground** (`ojtibrief.ground.v2`): `pushback`, `taxi` (Start Taxi → TWY P), `twy_p_f`, `twy_f_hp`, `hp_lineup`, `lineup_roll`. TWY P is the parallel taxiway.
+- **Ground** (`ojtibrief.ground.v2`): `pushback`, `taxi` (Start Taxi → TWY P), `twy_p_f`, `twy_f_hp`, `hp_lineup`, `lineup_roll`. TWY P is the parallel taxiway. TWY E (just north of the apron connector) is the vacating taxiway; A-D-A arrivals exit there.
 - **Circuit** (`ojtibrief.circuit.v2`): `upwind`, `crosswind`, `downwind`, `base`, `final`, `touchdown` (right-hand, RWY 36, touch-and-go).
 - **Break**: `initial`, `turn180`, `base`, `landing`.
 

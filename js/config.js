@@ -211,3 +211,74 @@ function loadBreakPhases() {
 function saveBreakPhases(arr) {
   localStorage.setItem(BREAK_STORAGE_KEY, JSON.stringify(arr));
 }
+
+/* ---- Default durations file (defaults.md) ----
+ * Markdown tables, one `## ` section per data set. Loaded at startup to
+ * override the built-in DEFAULT_* values; requires a web server (fetch). */
+
+const DEFAULTS_FILE = "defaults.md";
+
+const DEFAULTS_SECTIONS = [
+  { heading: "In-flight Timings", key: "nm",  field: "ttt",      list: DEFAULT_TIMINGS },
+  { heading: "Ground Phases",     key: "id",  field: "duration", list: DEFAULT_GROUND_PHASES },
+  { heading: "Circuit Phases",    key: "id",  field: "duration", list: DEFAULT_CIRCUIT_PHASES },
+  { heading: "Break Phases",      key: "id",  field: "duration", list: DEFAULT_BREAK_PHASES },
+];
+
+/* "mm:ss" (or plain seconds) -> seconds; NaN when unparseable. */
+function parseMMSS(str) {
+  const m = String(str).trim().match(/^(\d+)(?::(\d{1,2}))?$/);
+  if (!m) return NaN;
+  return m[2] === undefined ? parseInt(m[1], 10) : parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+}
+
+/* Builds defaults.md text from data sets in DEFAULTS_SECTIONS order:
+ * { timings, ground, circuit, break } */
+function durationsToMarkdown(data) {
+  const sets = [data.timings, data.ground, data.circuit, data.break];
+  let out = "# Default Durations\n\n" +
+    "Loaded by the app at startup as the defaults. Edit the mm:ss column, or use\n" +
+    "\"Save as default file\" on the Config tab to regenerate this file.\n";
+  DEFAULTS_SECTIONS.forEach((sec, i) => {
+    out += "\n## " + sec.heading + "\n\n";
+    if (sec.key === "nm") {
+      out += "| NM | To touchdown (mm:ss) |\n|---:|---:|\n";
+      sets[i].forEach((r) => { out += "| " + r.nm + " | " + formatMMSS(r.ttt) + " |\n"; });
+    } else {
+      out += "| id | Phase | Duration (mm:ss) |\n|---|---|---:|\n";
+      sets[i].forEach((p) => { out += "| " + p.id + " | " + p.label + " | " + formatMMSS(p.duration) + " |\n"; });
+    }
+  });
+  return out;
+}
+
+/* Parses defaults.md and writes matching values into the DEFAULT_* arrays.
+ * Rows are matched by NM / id; unknown or invalid rows are ignored. */
+function applyDefaultsMarkdown(text) {
+  const chunks = text.split(/^##\s+/m).slice(1);
+  chunks.forEach((chunk) => {
+    const lines = chunk.split(/\r?\n/);
+    const sec = DEFAULTS_SECTIONS.find((s) => s.heading.toLowerCase() === lines[0].trim().toLowerCase());
+    if (!sec) return;
+    lines.slice(1).forEach((line) => {
+      if (!/^\s*\|/.test(line)) return;
+      const cells = line.split("|").slice(1, -1).map((c) => c.trim());
+      if (cells.length < 2) return;
+      const secs = parseMMSS(cells[cells.length - 1]);
+      if (!isFinite(secs) || secs < 0) return;
+      const row = sec.list.find((r) => String(r[sec.key]) === cells[0]);
+      if (row) row[sec.field] = secs;
+    });
+  });
+}
+
+/* Fetches defaults.md and applies it. Resolves true when applied. */
+function loadDefaultsFile() {
+  return fetch(DEFAULTS_FILE, { cache: "no-store" })
+    .then((r) => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    })
+    .then((text) => { applyDefaultsMarkdown(text); return true; })
+    .catch(() => false);
+}

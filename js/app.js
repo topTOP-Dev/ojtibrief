@@ -287,6 +287,76 @@ function initBreakConfig() {
   });
 }
 
+/* ---- Default durations file (defaults.md) ---- */
+
+/* Re-reads every data set (localStorage, else DEFAULT_*) into the sims and tables. */
+function reloadAllConfig() {
+  Sim.setTimings(loadTimings());
+  buildConfigTable(Sim.getTimings());
+  GroundSim.setPhases(loadGroundPhases());
+  buildGroundConfigTable(GroundSim.getPhases());
+  CircuitCompare.setPhases(loadCircuitPhases());
+  buildCircuitConfigTable(CircuitCompare.getPhases());
+  BreakCompare.setPhases(loadBreakPhases());
+  buildBreakConfigTable(BreakCompare.getPhases());
+}
+
+/* Copies `src` values into the DEFAULT_* array `dest` so "Reset to defaults" uses them. */
+function setDefaults(dest, src, field) {
+  dest.forEach((row, i) => { row[field] = src[i][field]; });
+}
+
+function writeDefaultsFile(text) {
+  if (window.showSaveFilePicker) {
+    return window.showSaveFilePicker({
+      suggestedName: DEFAULTS_FILE,
+      types: [{ description: "Markdown", accept: { "text/markdown": [".md"] } }],
+    })
+      .then((handle) => handle.createWritable())
+      .then((w) => w.write(text).then(() => w.close()));
+  }
+  // Fallback: download, then place it in the project root manually.
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type: "text/markdown" }));
+  a.download = DEFAULTS_FILE;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  return Promise.resolve();
+}
+
+function flashDefaultsStatus(msg) {
+  const el = document.getElementById("defaults-file-status");
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ""; }, 3000);
+}
+
+function initDefaultsFile() {
+  document.getElementById("btn-defaults-file").addEventListener("click", () => {
+    const data = {
+      timings: collectConfig(),
+      ground: collectGroundConfig(),
+      circuit: collectCircuitConfig(),
+      break: collectBreakConfig(),
+    };
+    setDefaults(DEFAULT_TIMINGS, data.timings, "ttt");
+    setDefaults(DEFAULT_GROUND_PHASES, data.ground, "duration");
+    setDefaults(DEFAULT_CIRCUIT_PHASES, data.circuit, "duration");
+    setDefaults(DEFAULT_BREAK_PHASES, data.break, "duration");
+    saveTimings(data.timings);
+    saveGroundPhases(data.ground);
+    saveCircuitPhases(data.circuit);
+    saveBreakPhases(data.break);
+    reloadAllConfig();
+
+    writeDefaultsFile(durationsToMarkdown(data))
+      .then(() => flashDefaultsStatus("Saved " + DEFAULTS_FILE + " ✓"))
+      .catch((e) => { if (e && e.name !== "AbortError") flashDefaultsStatus("Could not save file"); });
+  });
+
+  // Apply defaults.md once fetched; rows still on localStorage keep their saved values.
+  loadDefaultsFile().then((applied) => { if (applied) reloadAllConfig(); });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initTabs();
   initSubTabs();
@@ -300,6 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCircuitConfig();
   BreakCompare.init();
   initBreakConfig();
+  initDefaultsFile();
   ADA.init();
   ADA18.init();
   Brief.init();

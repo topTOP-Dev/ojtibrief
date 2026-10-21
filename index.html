@@ -3,454 +3,274 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ATC Chiang Mai Tower Briefing</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta name="description" content="Animated ATC briefing simulator for Chiang Mai Tower (VTCC) OJTI training." />
+    <meta name="theme-color" content="#11181a" />
+    <title>VTCC Tower Briefing</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2338e08a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19.07 4.93A10 10 0 0 0 6.99 3.34'/%3E%3Cpath d='M4 6h.01'/%3E%3Cpath d='M2.29 9.62A10 10 0 1 0 21.31 8.35'/%3E%3Cpath d='M16.24 7.76A6 6 0 1 0 8.23 16.67'/%3E%3Cpath d='M12 18h.01'/%3E%3Cpath d='M17.99 11.66A6 6 0 0 1 15.77 16.67'/%3E%3Ccircle cx='12' cy='12' r='2'/%3E%3Cpath d='m13.41 10.59 5.66-5.66'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <header class="app-header">
-      <h1>ATC Chiang Mai Tower Briefing</h1>
-      <nav class="tabs">
-        <button class="tab-btn active" data-tab="sim">Local</button>
-        <button class="tab-btn" data-tab="ground">Ground</button>
-        <button class="tab-btn" data-tab="compare">Mix Mode</button>
-        <button class="tab-btn" data-tab="ada">A-D-A</button>
-        <button class="tab-btn" data-tab="circuit">Circuit</button>
-        <button class="tab-btn" data-tab="break">Overhead</button>
-        <!-- <button class="tab-btn" data-tab="brief">Brief</button> -->
-        <button class="tab-btn" data-tab="config">Config</button>
+      <div class="brand">
+        <span class="brand-icon"><i data-lucide="radar"></i></span>
+        <div class="brand-text">
+          <h1>VTCC Tower Briefing</h1>
+          <span class="brand-sub">Chiang Mai · OJTI simulator</span>
+        </div>
+        <span class="instructor-badge instructor-only">Instructor</span>
+      </div>
+      <nav class="tabs" aria-label="Views">
+        <button class="tab-btn active" data-tab="sim"><i data-lucide="radar"></i><span>Local</span></button>
+        <button class="tab-btn" data-tab="ground"><i data-lucide="plane-takeoff"></i><span>Ground</span></button>
+        <button class="tab-btn" data-tab="compare"><i data-lucide="arrow-left-right"></i><span>Mix Mode</span></button>
+        <button class="tab-btn" data-tab="ada"><i data-lucide="list-ordered"></i><span>A-D-A</span></button>
+        <button class="tab-btn" data-tab="circuit"><i data-lucide="repeat"></i><span>Circuit</span></button>
+        <button class="tab-btn" data-tab="break"><i data-lucide="plane-landing"></i><span>Overhead</span></button>
+        <!-- <button class="tab-btn" data-tab="brief"><i data-lucide="book-open"></i><span>Brief</span></button> -->
+        <button class="tab-btn instructor-only" data-tab="config"><i data-lucide="settings"></i><span>Config</span></button>
       </nav>
     </header>
 
     <main>
-      <!-- ===== Radar Simulation tab ===== -->
+      <!-- ===== Local (inbound radar) ===== -->
       <section id="tab-sim" class="tab-panel active">
-        <div class="sim-layout">
-          <div class="scope-wrap">
-            <canvas id="scope" width="600" height="600"></canvas>
-            <div class="controls">
-              <button id="btn-prev">&laquo; Previous</button>
-              <button id="btn-next">Next &raquo;</button>
-              <button id="btn-reset" class="secondary">Reset</button>
+        <div class="view" id="v-sim">
+          <div class="stage">
+            <div class="canvases single">
+              <figure class="pane">
+                <canvas id="sim-a" class="scope" aria-label="Radar scope"></canvas>
+              </figure>
             </div>
+            <div id="sim-player"></div>
           </div>
-
-          <aside class="side-panel">
-            <h2>Inbound Sequence</h2>
-            <p class="readout">
-              <span id="readout-nm">80 NM</span>
-              <span id="readout-ttt">T-16:00</span>
-            </p>
-            <table class="ring-list">
-              <thead>
-                <tr>
-                  <th>Range</th>
-                  <th>To touchdown</th>
-                </tr>
-              </thead>
-              <tbody id="ring-list-body">
-                <!-- filled by JS -->
-              </tbody>
+          <aside class="side">
+            <h2><i data-lucide="plane-landing"></i> Inbound Sequence</h2>
+            <div class="stats" id="sim-stats"></div>
+            <table class="phase-table">
+              <thead><tr><th>Range</th><th>To touchdown</th></tr></thead>
+              <tbody id="sim-table"></tbody>
             </table>
           </aside>
         </div>
       </section>
 
-      <!-- ===== Ground tab ===== -->
+      <!-- ===== Ground (departure) ===== -->
       <section id="tab-ground" class="tab-panel">
-        <div class="sim-layout">
-          <div class="scope-wrap">
-            <canvas id="airport" width="600" height="600"></canvas>
-            <div class="controls">
-              <button id="btn-ground-prev">&laquo; Previous</button>
-              <button id="btn-ground-next">Next &raquo;</button>
-              <button id="btn-ground-reset" class="secondary">Reset</button>
+        <div class="view" id="v-ground">
+          <div class="stage">
+            <div class="canvases single">
+              <figure class="pane">
+                <canvas id="ground-a" class="diagram" aria-label="Airport diagram"></canvas>
+              </figure>
             </div>
+            <div id="ground-player"></div>
           </div>
-
-          <aside class="side-panel">
-            <h2>Departure Sequence</h2>
-            <p class="readout">
-              <span id="ground-readout-phase">Push Back</span>
-              <span id="ground-readout-dur">3:00</span>
-            </p>
-            <table class="ring-list">
-              <thead>
-                <tr>
-                  <th>Phase</th>
-                  <th>Duration</th>
-                </tr>
-              </thead>
-              <tbody id="ground-phase-body">
-                <!-- filled by JS -->
-              </tbody>
+          <aside class="side">
+            <h2><i data-lucide="plane-takeoff"></i> Departure Sequence</h2>
+            <div class="stats" id="ground-stats"></div>
+            <table class="phase-table">
+              <thead><tr><th>Phase</th><th>Duration</th></tr></thead>
+              <tbody id="ground-table"></tbody>
             </table>
           </aside>
         </div>
       </section>
 
-      <!-- ===== Compare tab ===== -->
+      <!-- ===== Mix Mode ===== -->
       <section id="tab-compare" class="tab-panel">
         <div class="subtabs">
           <button class="subtab-btn active" data-subtab="compare-36">RWY 36</button>
           <button class="subtab-btn" data-subtab="compare-18">RWY 18</button>
         </div>
 
-        <!-- RWY 36 sub-view (straight-in) -->
         <div id="sub-compare-36" class="subtab-panel active">
-          <div class="compare-layout">
-            <div class="compare-canvas-wrap">
-              <div class="compare-canvas-pair">
-                <div class="compare-pane">
-                  <span class="pane-label">In-flight (Local)</span>
-                  <canvas id="compare-scope" width="600" height="600"></canvas>
-                </div>
-                <div class="compare-pane">
-                  <span class="pane-label">On Ground</span>
-                  <canvas id="compare-airport" width="600" height="600"></canvas>
-                </div>
+          <div class="view collapsible" id="v-cmp36">
+            <div class="stage">
+              <div class="canvases pair">
+                <figure class="pane">
+                  <figcaption><i data-lucide="radar"></i> In-flight (Local)</figcaption>
+                  <canvas id="cmp36-a" class="scope"></canvas>
+                </figure>
+                <figure class="pane">
+                  <figcaption><i data-lucide="plane-takeoff"></i> On Ground</figcaption>
+                  <canvas id="cmp36-b" class="diagram"></canvas>
+                </figure>
               </div>
-              <div
-                class="controls"
-                style="margin-top: 14px; justify-content: center"
-              >
-                <button id="btn-cmp-prev">&laquo; Previous</button>
-                <button id="btn-cmp-next">Next &raquo;</button>
-                <button id="btn-cmp-reset" class="secondary">Reset</button>
+              <div class="stage-bar">
+                <div class="stats" id="cmp36-stats"></div>
+                <button class="ghost-btn drawer-btn" type="button"><i data-lucide="table"></i><span>Table</span></button>
               </div>
+              <div id="cmp36-player"></div>
             </div>
+            <aside class="side">
+              <h2>Arrival / Departure Correlation</h2>
+              <table class="phase-table">
+                <thead><tr><th>Ground Phase</th><th>Duration</th><th>In-flight</th><th>TTD</th></tr></thead>
+                <tbody id="cmp36-table"></tbody>
+              </table>
+            </aside>
           </div>
-
-          <button id="btn-cmp-toggle" class="cmp-toggle-btn">Table</button>
-
-          <aside id="cmp-correlation" class="compare-side cmp-drawer">
-            <h2>Arrival / Departure Correlation</h2>
-            <div class="compare-readout">
-              <div>
-                <span class="label">In-flight</span>
-                <span id="cmp-inflight-nm">40.0 NM</span>
-                <span id="cmp-inflight-ttt" style="margin-left: 8px">T-8:00</span>
-              </div>
-              <div>
-                <span class="label">Ground</span>
-                <span id="cmp-ground-phase">Push Back</span>
-                <span id="cmp-ground-dur" style="margin-left: 8px">3:00</span>
-              </div>
-            </div>
-            <table class="compare-table">
-              <thead>
-                <tr>
-                  <th>Ground Phase</th>
-                  <th>Duration</th>
-                  <th>In-flight</th>
-                  <th>TTD</th>
-                </tr>
-              </thead>
-              <tbody id="cmp-table-body">
-                <!-- filled by JS -->
-              </tbody>
-            </table>
-          </aside>
         </div>
 
-        <!-- RWY 18 sub-view (dog-leg from the north) -->
         <div id="sub-compare-18" class="subtab-panel">
-          <div class="compare-layout">
-            <div class="compare-canvas-wrap">
-              <div class="compare-canvas-pair">
-                <div class="compare-pane">
-                  <span class="pane-label">Arrival RWY 18</span>
-                  <canvas id="compare18-scope" width="600" height="600"></canvas>
-                </div>
-                <div class="compare-pane">
-                  <span class="pane-label">Departure RWY 18</span>
-                  <canvas id="compare18-airport" width="600" height="600"></canvas>
-                </div>
+          <div class="view collapsible" id="v-cmp18">
+            <div class="stage">
+              <div class="canvases pair">
+                <figure class="pane">
+                  <figcaption><i data-lucide="radar"></i> Arrival RWY 18</figcaption>
+                  <canvas id="cmp18-a" class="scope"></canvas>
+                </figure>
+                <figure class="pane">
+                  <figcaption><i data-lucide="plane-takeoff"></i> Departure RWY 18</figcaption>
+                  <canvas id="cmp18-b" class="diagram"></canvas>
+                </figure>
               </div>
-              <div
-                class="controls"
-                style="margin-top: 14px; justify-content: center"
-              >
-                <button id="btn-c18-prev">&laquo; Previous</button>
-                <button id="btn-c18-next">Next &raquo;</button>
-                <button id="btn-c18-reset" class="secondary">Reset</button>
+              <div class="stage-bar">
+                <div class="stats" id="cmp18-stats"></div>
+                <button class="ghost-btn drawer-btn" type="button"><i data-lucide="table"></i><span>Table</span></button>
               </div>
+              <div id="cmp18-player"></div>
             </div>
+            <aside class="side">
+              <h2>RWY 18 Arrival / Departure Correlation</h2>
+              <table class="phase-table">
+                <thead><tr><th>Ground Phase</th><th>Duration</th><th>Arrival</th><th>TTD</th></tr></thead>
+                <tbody id="cmp18-table"></tbody>
+              </table>
+            </aside>
           </div>
-
-          <button id="btn-c18-toggle" class="cmp-toggle-btn">Table</button>
-
-          <aside id="c18-correlation" class="compare-side cmp-drawer">
-            <h2>RWY 18 Arrival / Departure Correlation</h2>
-            <div class="compare-readout">
-              <div>
-                <span class="label">Arrival (to touchdown)</span>
-                <span id="c18-inflight-nm">36.0 NM</span>
-                <span id="c18-inflight-ttt" style="margin-left: 8px">T-7:12</span>
-              </div>
-              <div>
-                <span class="label">Ground</span>
-                <span id="c18-ground-phase">Push Back</span>
-                <span id="c18-ground-dur" style="margin-left: 8px">3:00</span>
-              </div>
-            </div>
-            <table class="compare-table">
-              <thead>
-                <tr>
-                  <th>Ground Phase</th>
-                  <th>Duration</th>
-                  <th>Arrival</th>
-                  <th>TTD</th>
-                </tr>
-              </thead>
-              <tbody id="c18-table-body">
-                <!-- filled by JS -->
-              </tbody>
-            </table>
-          </aside>
         </div>
       </section>
 
-      <!-- ===== Circuit tab ===== -->
-      <section id="tab-circuit" class="tab-panel">
-        <div class="compare-layout">
-          <div class="compare-canvas-wrap">
-            <div class="compare-canvas-pair">
-              <div class="compare-pane">
-                <span class="pane-label">In-flight (Local)</span>
-                <canvas id="circuit-scope" width="600" height="600"></canvas>
-              </div>
-              <div class="compare-pane">
-                <span class="pane-label">Traffic Circuit</span>
-                <canvas id="circuit-pattern" width="600" height="600"></canvas>
-              </div>
-            </div>
-            <div
-              class="controls"
-              style="margin-top: 14px; justify-content: center"
-            >
-              <button id="btn-cir-prev">&laquo; Previous</button>
-              <button id="btn-cir-next">Next &raquo;</button>
-              <button id="btn-cir-reset" class="secondary">Reset</button>
-            </div>
-          </div>
-        </div>
-
-        <button id="btn-cir-toggle" class="cmp-toggle-btn">Table</button>
-
-        <aside id="cir-correlation" class="compare-side cmp-drawer">
-          <h2>In-flight / Circuit Correlation</h2>
-          <div class="compare-readout">
-            <div>
-              <span class="label">In-flight</span>
-              <span id="cir-inflight-nm">20.0 NM</span>
-              <span id="cir-inflight-ttt" style="margin-left: 8px">T-4:00</span>
-            </div>
-            <div>
-              <span class="label">Circuit</span>
-              <span id="cir-circuit-phase">Downwind Leg</span>
-              <span id="cir-circuit-dur" style="margin-left: 8px">1:00</span>
-            </div>
-          </div>
-          <table class="compare-table">
-            <thead>
-              <tr>
-                <th>Circuit Phase</th>
-                <th>Duration</th>
-                <th>In-flight</th>
-                <th>TTD</th>
-              </tr>
-            </thead>
-            <tbody id="cir-table-body">
-              <!-- filled by JS -->
-            </tbody>
-          </table>
-        </aside>
-      </section>
-
-      <!-- ===== Break tab ===== -->
-      <section id="tab-break" class="tab-panel">
-        <div class="compare-layout">
-          <div class="compare-canvas-wrap">
-            <div class="compare-canvas-pair">
-              <div class="compare-pane">
-                <span class="pane-label">In-flight (Local)</span>
-                <canvas id="break-scope" width="600" height="600"></canvas>
-              </div>
-              <div class="compare-pane">
-                <span class="pane-label">Overhead Approach</span>
-                <canvas id="break-pattern" width="600" height="600"></canvas>
-              </div>
-            </div>
-            <div
-              class="controls"
-              style="margin-top: 14px; justify-content: center"
-            >
-              <button id="btn-brk-prev">&laquo; Previous</button>
-              <button id="btn-brk-next">Next &raquo;</button>
-              <button id="btn-brk-reset" class="secondary">Reset</button>
-            </div>
-          </div>
-        </div>
-
-        <button id="btn-brk-toggle" class="cmp-toggle-btn">Table</button>
-
-        <aside id="brk-correlation" class="compare-side cmp-drawer">
-          <h2>In-flight / Break Correlation</h2>
-          <div class="compare-readout">
-            <div>
-              <span class="label">In-flight</span>
-              <span id="brk-inflight-nm">20.0 NM</span>
-              <span id="brk-inflight-ttt" style="margin-left: 8px">T-4:00</span>
-            </div>
-            <div>
-              <span class="label">Break</span>
-              <span id="brk-pattern-phase">Initial → Break</span>
-              <span id="brk-pattern-dur" style="margin-left: 8px">1:00</span>
-            </div>
-          </div>
-          <table class="compare-table">
-            <thead>
-              <tr>
-                <th>Break Phase</th>
-                <th>Duration</th>
-                <th>In-flight</th>
-                <th>TTD</th>
-              </tr>
-            </thead>
-            <tbody id="brk-table-body">
-              <!-- filled by JS -->
-            </tbody>
-          </table>
-        </aside>
-      </section>
-
-      <!-- ===== Arrival · Departure · Arrival tab ===== -->
+      <!-- ===== Arrival · Departure · Arrival ===== -->
       <section id="tab-ada" class="tab-panel">
         <div class="subtabs">
           <button class="subtab-btn active" data-subtab="ada-36">RWY 36</button>
           <button class="subtab-btn" data-subtab="ada-18">RWY 18</button>
         </div>
 
-        <!-- RWY 36 sub-view (straight-in) -->
         <div id="sub-ada-36" class="subtab-panel active">
-          <div class="compare-layout">
-            <div class="compare-canvas-wrap">
-              <div class="compare-canvas-pair">
-                <div class="compare-pane">
-                  <span class="pane-label">Arrivals (Radar)</span>
-                  <canvas id="ada-scope" width="600" height="600"></canvas>
-                </div>
-                <div class="compare-pane">
-                  <span class="pane-label">Departure (Ground)</span>
-                  <canvas id="ada-airport" width="600" height="600"></canvas>
-                </div>
+          <div class="view collapsible" id="v-ada36">
+            <div class="stage">
+              <div class="canvases pair">
+                <figure class="pane">
+                  <figcaption><i data-lucide="radar"></i> Arrivals (Radar)</figcaption>
+                  <canvas id="ada36-a" class="scope"></canvas>
+                </figure>
+                <figure class="pane">
+                  <figcaption><i data-lucide="plane-takeoff"></i> Departure (Ground)</figcaption>
+                  <canvas id="ada36-b" class="diagram"></canvas>
+                </figure>
               </div>
-              <div
-                class="controls"
-                style="margin-top: 14px; justify-content: center"
-              >
-                <button id="btn-ada-prev">&laquo; Previous</button>
-                <button id="btn-ada-next">Next &raquo;</button>
-                <button id="btn-ada-reset" class="secondary">Reset</button>
+              <div class="stage-bar">
+                <div class="stats" id="ada36-stats"></div>
+                <button class="ghost-btn drawer-btn" type="button"><i data-lucide="table"></i><span>Table</span></button>
               </div>
+              <div id="ada36-player"></div>
             </div>
+            <aside class="side">
+              <h2>Arrival · Departure · Arrival</h2>
+              <table class="phase-table">
+                <thead><tr><th>Step</th><th>Arrival 1</th><th>Departure</th><th>Arrival 2</th></tr></thead>
+                <tbody id="ada36-table"></tbody>
+              </table>
+            </aside>
           </div>
-
-          <button id="btn-ada-toggle" class="cmp-toggle-btn">Table</button>
-
-          <aside id="ada-correlation" class="compare-side cmp-drawer">
-            <h2>Arrival · Departure · Arrival</h2>
-            <div class="compare-readout">
-              <div>
-                <span class="label">Arrival 1</span>
-                <span id="ada-arr1">5 NM final</span>
-              </div>
-              <div>
-                <span class="label">Departure</span>
-                <span id="ada-dep">Holding Point</span>
-              </div>
-              <div>
-                <span class="label">Arrival 2</span>
-                <span id="ada-arr2">RIGTA (20 NM)</span>
-              </div>
-            </div>
-            <table class="compare-table">
-              <thead>
-                <tr>
-                  <th>Step</th>
-                  <th>Arrival 1</th>
-                  <th>Departure</th>
-                  <th>Arrival 2</th>
-                </tr>
-              </thead>
-              <tbody id="ada-table-body">
-                <!-- filled by JS -->
-              </tbody>
-            </table>
-          </aside>
         </div>
 
-        <!-- RWY 18 sub-view (dog-leg from the north) -->
         <div id="sub-ada-18" class="subtab-panel">
-          <div class="compare-layout">
-            <div class="compare-canvas-wrap">
-              <div class="compare-canvas-pair">
-                <div class="compare-pane">
-                  <span class="pane-label">Arrivals RWY 18 (Radar)</span>
-                  <canvas id="ada18-scope" width="600" height="600"></canvas>
-                </div>
-                <div class="compare-pane">
-                  <span class="pane-label">Departure RWY 18 (Ground)</span>
-                  <canvas id="ada18-airport" width="600" height="600"></canvas>
-                </div>
+          <div class="view collapsible" id="v-ada18">
+            <div class="stage">
+              <div class="canvases pair">
+                <figure class="pane">
+                  <figcaption><i data-lucide="radar"></i> Arrivals RWY 18 (Radar)</figcaption>
+                  <canvas id="ada18-a" class="scope"></canvas>
+                </figure>
+                <figure class="pane">
+                  <figcaption><i data-lucide="plane-takeoff"></i> Departure RWY 18 (Ground)</figcaption>
+                  <canvas id="ada18-b" class="diagram"></canvas>
+                </figure>
               </div>
-              <div
-                class="controls"
-                style="margin-top: 14px; justify-content: center"
-              >
-                <button id="btn-a18-prev">&laquo; Previous</button>
-                <button id="btn-a18-next">Next &raquo;</button>
-                <button id="btn-a18-reset" class="secondary">Reset</button>
+              <div class="stage-bar">
+                <div class="stats" id="ada18-stats"></div>
+                <button class="ghost-btn drawer-btn" type="button"><i data-lucide="table"></i><span>Table</span></button>
               </div>
+              <div id="ada18-player"></div>
             </div>
+            <aside class="side">
+              <h2>Arrival · Departure · Arrival — RWY 18</h2>
+              <table class="phase-table">
+                <thead><tr><th>Step</th><th>Arrival 1</th><th>Departure</th><th>Arrival 2</th></tr></thead>
+                <tbody id="ada18-table"></tbody>
+              </table>
+            </aside>
           </div>
+        </div>
+      </section>
 
-          <button id="btn-a18-toggle" class="cmp-toggle-btn">Table</button>
-
-          <aside id="a18-correlation" class="compare-side cmp-drawer">
-            <h2>Arrival · Departure · Arrival — RWY 18</h2>
-            <div class="compare-readout">
-              <div>
-                <span class="label">Arrival 1</span>
-                <span id="a18-arr1">5 NM final</span>
-              </div>
-              <div>
-                <span class="label">Departure</span>
-                <span id="a18-dep">Holding Point</span>
-              </div>
-              <div>
-                <span class="label">Arrival 2</span>
-                <span id="a18-arr2">SUSEG (30 NM)</span>
-              </div>
+      <!-- ===== Circuit ===== -->
+      <section id="tab-circuit" class="tab-panel">
+        <div class="view collapsible" id="v-circuit">
+          <div class="stage">
+            <div class="canvases pair">
+              <figure class="pane">
+                <figcaption><i data-lucide="radar"></i> In-flight (Local)</figcaption>
+                <canvas id="circuit-a" class="scope"></canvas>
+              </figure>
+              <figure class="pane">
+                <figcaption><i data-lucide="repeat"></i> Traffic Circuit</figcaption>
+                <canvas id="circuit-b" class="diagram"></canvas>
+              </figure>
             </div>
-            <table class="compare-table">
-              <thead>
-                <tr>
-                  <th>Step</th>
-                  <th>Arrival 1</th>
-                  <th>Departure</th>
-                  <th>Arrival 2</th>
-                </tr>
-              </thead>
-              <tbody id="a18-table-body">
-                <!-- filled by JS -->
-              </tbody>
+            <div class="stage-bar">
+              <div class="stats" id="circuit-stats"></div>
+              <button class="ghost-btn drawer-btn" type="button"><i data-lucide="table"></i><span>Table</span></button>
+            </div>
+            <div id="circuit-player"></div>
+          </div>
+          <aside class="side">
+            <h2>In-flight / Circuit Correlation</h2>
+            <table class="phase-table">
+              <thead><tr><th>Circuit Phase</th><th>Duration</th><th>In-flight</th><th>TTD</th></tr></thead>
+              <tbody id="circuit-table"></tbody>
             </table>
           </aside>
         </div>
       </section>
 
-      <!-- ===== Brief tab ===== -->
+      <!-- ===== Overhead break ===== -->
+      <section id="tab-break" class="tab-panel">
+        <div class="view collapsible" id="v-break">
+          <div class="stage">
+            <div class="canvases pair">
+              <figure class="pane">
+                <figcaption><i data-lucide="radar"></i> In-flight (Local)</figcaption>
+                <canvas id="break-a" class="scope"></canvas>
+              </figure>
+              <figure class="pane">
+                <figcaption><i data-lucide="plane-landing"></i> Overhead Approach</figcaption>
+                <canvas id="break-b" class="diagram"></canvas>
+              </figure>
+            </div>
+            <div class="stage-bar">
+              <div class="stats" id="break-stats"></div>
+              <button class="ghost-btn drawer-btn" type="button"><i data-lucide="table"></i><span>Table</span></button>
+            </div>
+            <div id="break-player"></div>
+          </div>
+          <aside class="side">
+            <h2>In-flight / Break Correlation</h2>
+            <table class="phase-table">
+              <thead><tr><th>Break Phase</th><th>Duration</th><th>In-flight</th><th>TTD</th></tr></thead>
+              <tbody id="break-table"></tbody>
+            </table>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ===== Brief (slides; tab button hidden) ===== -->
       <section id="tab-brief" class="tab-panel">
         <div class="brief-layout">
           <div class="brief-deck-bar">
@@ -458,11 +278,10 @@
             <select id="brief-deck-select" class="brief-deck-select"></select>
           </div>
           <div class="brief-nav">
-            <button id="btn-brief-prev">&laquo; Prev</button>
+            <button id="btn-brief-prev" class="ghost-btn">&laquo; Prev</button>
             <span id="brief-slide-num" class="brief-slide-counter">— / —</span>
-            <button id="btn-brief-next">Next &raquo;</button>
+            <button id="btn-brief-next" class="ghost-btn">Next &raquo;</button>
           </div>
-
           <div id="brief-slide-area" class="brief-slide-area">
             <div id="brief-slide" class="brief-slide">
               <p class="brief-error">Loading briefing slides…</p>
@@ -471,139 +290,88 @@
         </div>
       </section>
 
-      <!-- ===== Config tab ===== -->
+      <!-- ===== Config (instructor only) ===== -->
       <section id="tab-config" class="tab-panel">
-        <h2>Timing Configuration</h2>
-        <p class="hint">
-          Set the time remaining to touchdown for each range ring (mm:ss).
-        </p>
-        <table class="config-table">
-          <thead>
-            <tr>
-              <th>Range (NM)</th>
-              <th>Minutes</th>
-              <th>Seconds</th>
-              <th>To touchdown</th>
-            </tr>
-          </thead>
-          <tbody id="config-table-body">
-            <!-- filled by JS -->
-          </tbody>
-        </table>
-        <div class="controls">
-          <button id="btn-save">Save</button>
-          <button id="btn-defaults" class="secondary">Reset to defaults</button>
-          <span id="save-status" class="save-status"></span>
-        </div>
+        <div class="config">
+          <p class="config-intro">
+            Changes save in this browser only. To publish new defaults for
+            students, use <strong>Save as default file</strong> at the bottom,
+            save it as <code>public/defaults.md</code>, then commit and push.
+          </p>
 
-        <hr class="config-divider" />
+          <div class="config-grid">
+            <div class="card">
+              <h2><i data-lucide="radar"></i> In-flight Timings</h2>
+              <p class="hint">Time remaining to touchdown at each range ring.</p>
+              <table class="config-table">
+                <thead><tr><th>Range (NM)</th><th>Min</th><th>Sec</th><th>To touchdown</th></tr></thead>
+                <tbody id="cfg-timings"></tbody>
+              </table>
+              <div class="controls">
+                <button class="primary-btn" data-save="timings"><i data-lucide="save"></i>Save</button>
+                <button class="ghost-btn" data-reset="timings"><i data-lucide="undo-2"></i>Reset to defaults</button>
+                <span class="save-status" data-status="timings"></span>
+              </div>
+            </div>
 
-        <h2>Ground Phase Durations</h2>
-        <p class="hint">Set the duration for each ground phase (mm:ss).</p>
-        <table class="config-table">
-          <thead>
-            <tr>
-              <th>Phase</th>
-              <th>Minutes</th>
-              <th>Seconds</th>
-              <th>Duration</th>
-            </tr>
-          </thead>
-          <tbody id="ground-config-body">
-            <!-- filled by JS -->
-          </tbody>
-        </table>
-        <div class="controls">
-          <button id="btn-ground-save">Save</button>
-          <button id="btn-ground-defaults" class="secondary">
-            Reset to defaults
-          </button>
-          <span id="ground-save-status" class="save-status"></span>
-        </div>
+            <div class="card">
+              <h2><i data-lucide="plane-takeoff"></i> Ground Phases</h2>
+              <p class="hint">Duration of each departure phase.</p>
+              <table class="config-table">
+                <thead><tr><th>Phase</th><th>Min</th><th>Sec</th><th>Duration</th></tr></thead>
+                <tbody id="cfg-ground"></tbody>
+              </table>
+              <div class="controls">
+                <button class="primary-btn" data-save="ground"><i data-lucide="save"></i>Save</button>
+                <button class="ghost-btn" data-reset="ground"><i data-lucide="undo-2"></i>Reset to defaults</button>
+                <span class="save-status" data-status="ground"></span>
+              </div>
+            </div>
 
-        <hr class="config-divider" />
+            <div class="card">
+              <h2><i data-lucide="repeat"></i> Circuit Phases</h2>
+              <p class="hint">Duration of each traffic circuit phase.</p>
+              <table class="config-table">
+                <thead><tr><th>Phase</th><th>Min</th><th>Sec</th><th>Duration</th></tr></thead>
+                <tbody id="cfg-circuit"></tbody>
+              </table>
+              <div class="controls">
+                <button class="primary-btn" data-save="circuit"><i data-lucide="save"></i>Save</button>
+                <button class="ghost-btn" data-reset="circuit"><i data-lucide="undo-2"></i>Reset to defaults</button>
+                <span class="save-status" data-status="circuit"></span>
+              </div>
+            </div>
 
-        <h2>Circuit Phase Durations</h2>
-        <p class="hint">
-          Set the duration for each traffic circuit phase (mm:ss).
-        </p>
-        <table class="config-table">
-          <thead>
-            <tr>
-              <th>Phase</th>
-              <th>Minutes</th>
-              <th>Seconds</th>
-              <th>Duration</th>
-            </tr>
-          </thead>
-          <tbody id="circuit-config-body">
-            <!-- filled by JS -->
-          </tbody>
-        </table>
-        <div class="controls">
-          <button id="btn-circuit-save">Save</button>
-          <button id="btn-circuit-defaults" class="secondary">
-            Reset to defaults
-          </button>
-          <span id="circuit-save-status" class="save-status"></span>
-        </div>
+            <div class="card">
+              <h2><i data-lucide="plane-landing"></i> Break Phases</h2>
+              <p class="hint">Duration of each military overhead-break phase.</p>
+              <table class="config-table">
+                <thead><tr><th>Phase</th><th>Min</th><th>Sec</th><th>Duration</th></tr></thead>
+                <tbody id="cfg-break"></tbody>
+              </table>
+              <div class="controls">
+                <button class="primary-btn" data-save="break"><i data-lucide="save"></i>Save</button>
+                <button class="ghost-btn" data-reset="break"><i data-lucide="undo-2"></i>Reset to defaults</button>
+                <span class="save-status" data-status="break"></span>
+              </div>
+            </div>
+          </div>
 
-        <hr class="config-divider" />
-
-        <h2>Break Phase Durations</h2>
-        <p class="hint">
-          Set the duration for each military overhead-break phase (mm:ss).
-        </p>
-        <table class="config-table">
-          <thead>
-            <tr>
-              <th>Phase</th>
-              <th>Minutes</th>
-              <th>Seconds</th>
-              <th>Duration</th>
-            </tr>
-          </thead>
-          <tbody id="break-config-body">
-            <!-- filled by JS -->
-          </tbody>
-        </table>
-        <div class="controls">
-          <button id="btn-break-save">Save</button>
-          <button id="btn-break-defaults" class="secondary">
-            Reset to defaults
-          </button>
-          <span id="break-save-status" class="save-status"></span>
-        </div>
-
-        <hr class="config-divider" />
-
-        <h2>Default Durations File</h2>
-        <p class="hint">
-          Save all tables above as the defaults in <code>defaults.md</code>
-          (project root). The app loads that file at startup.
-        </p>
-        <div class="controls">
-          <button id="btn-defaults-file">Save as default file</button>
-          <span id="defaults-file-status" class="save-status"></span>
+          <div class="card">
+            <h2><i data-lucide="file-down"></i> Default Durations File</h2>
+            <p class="hint">
+              Saves all four tables (current inputs) as <code>defaults.md</code>.
+              The site loads <code>public/defaults.md</code> at startup.
+            </p>
+            <div class="controls">
+              <button class="primary-btn" id="btn-defaults-file"><i data-lucide="file-down"></i>Save as default file</button>
+              <span id="defaults-file-status" class="save-status"></span>
+            </div>
+          </div>
         </div>
       </section>
     </main>
 
-    <script src="js/config.js"></script>
-    <script src="js/radar.js"></script>
-    <script src="js/radar18.js"></script>
-    <script src="js/sim.js"></script>
-    <script src="js/airport.js"></script>
-    <script src="js/ground-sim.js"></script>
-    <script src="js/compare.js"></script>
-    <script src="js/compare18.js"></script>
-    <script src="js/circuit.js"></script>
-    <script src="js/circuit-compare.js"></script>
-    <script src="js/break-pattern.js"></script>
-    <script src="js/break-compare.js"></script>
-    <script src="js/ada.js"></script>
-    <script src="js/ada18.js"></script>
-    <script src="js/brief.js"></script>
-    <script src="js/app.js"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

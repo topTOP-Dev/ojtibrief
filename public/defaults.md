@@ -1,7 +1,8 @@
 # Default Durations
 
 Loaded by the app at startup as the defaults. Edit the mm:ss column, or use
-"Save as default file" on the Config tab to regenerate this file.
+"Save as default file" on the Config tab (open the site with ?instructor=1)
+to regenerate this file. It lives in public/defaults.md.
 
 ## In-flight Timings
 
@@ -20,22 +21,23 @@ Loaded by the app at startup as the defaults. Edit the mm:ss column, or use
 
 | id | Phase | Duration (mm:ss) |
 |---|---|---:|
-| pushback | Push Back | 3:00 |
-| taxi | Starting Taxi | 1:00 |
-| twy_f | Taxi Passing TWY F | 3:00 |
-| holding | At Holding Point | 2:00 |
-| lineup | Line Up on Runway | 1:00 |
-| rolling | Rolling for Take-off | 0:30 |
+| pushback | Start Push → Push Complete | 3:00 |
+| taxi | Start Taxi → TWY P | 1:00 |
+| twy_p_f | TWY P → TWY F | 1:00 |
+| twy_f_hp | TWY F → Holding Point | 1:00 |
+| hp_lineup | Holding Point → Line Up | 2:00 |
+| lineup_roll | Line Up → Rolling for Take-off | 1:00 |
 
 ## Circuit Phases
 
 | id | Phase | Duration (mm:ss) |
 |---|---|---:|
-| downwind | Downwind Leg | 1:00 |
-| base | Base Leg | 1:00 |
-| final | Final Leg | 1:00 |
-| upwind | Upwind Leg | 1:00 |
-| crosswind | Crosswind Leg | 1:00 |
+| upwind | Upwind → Crosswind | 1:00 |
+| crosswind | Crosswind → Downwind | 1:00 |
+| downwind | Downwind → Base | 1:00 |
+| base | Base → Final | 0:45 |
+| final | Final → Touchdown | 1:00 |
+| touchdown | Touchdown → Upwind | 0:30 |
 
 ## Break Phases
 

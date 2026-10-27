@@ -1,9 +1,10 @@
 /* Simplified Chiang Mai International Airport (VTCC) top-down diagram.
  * Runway 18/36: 18 at the north end, 36 at the south end. Apron on the east.
  * TWY P is the parallel taxiway east of the runway. TWY E (just north of the
- * apron connector) is the vacating taxiway for landing traffic. TWY F links P
- * to the runway mid-south; TWY H (RWY 36 holding point) and TWY A (RWY 18
- * holding point) link P to the runway ends. */
+ * apron connector) is the vacating taxiway for RWY 36 landing traffic. TWY F
+ * links P to the runway mid-south (RWY 18 landing traffic vacates there);
+ * TWY H (RWY 36 holding point) and TWY A (RWY 18 holding point) link P to
+ * the runway ends. */
 
 import type { Phase } from "../config";
 import {
@@ -18,7 +19,7 @@ const RWY_TOP = 50;
 const RWY_BOT = 550;
 const TWY_A_Y = 75;
 export const TWY_E_Y = 255;
-const TWY_F_Y = 390;
+export const TWY_F_Y = 390;
 const TWY_H_Y = 525;
 export const CONNECTOR_Y = 300;
 export const TWY_P_X = 340;

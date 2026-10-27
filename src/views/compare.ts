@@ -1,10 +1,13 @@
 /* Mix Mode: an arrival on the radar correlated with the ground departure.
  *
  * RWY 36: the arrival runs 40 NM (push start) down to 4 NM final (end of
- * Line Up → Rolling), pinned to the ground sequence at two anchors keyed to
- * phase ids so they follow edited durations:
- *   - start of `taxi`     ("Start Taxi → TWY P")    -> 20 NM final (RIGTA)
- *   - start of `twy_f_hp` ("TWY F → Holding Point") -> 15 NM final
+ * Line Up → Rolling), pinned to the start of each ground phase by anchors
+ * keyed to phase ids so they follow edited durations:
+ *   - `taxi`        ("Start Taxi → TWY P")             -> 25 NM final
+ *   - `twy_p_f`     ("TWY P → TWY F")                  -> 20 NM final
+ *   - `twy_f_hp`    ("TWY F → Holding Point")          -> 15 NM final
+ *   - `hp_lineup`   ("Holding Point → Line Up")        -> 10 NM final
+ *   - `lineup_roll` ("Line Up → Rolling for Take-off") -> 7 NM final
  * Piecewise-linear between anchors gives a decelerating arrival profile.
  *
  * RWY 18: the arrival flies the dog-leg from TUNTU, its track distance
@@ -30,8 +33,11 @@ import { DEP_CALLSIGN } from "./ground";
 const COMPARE_START_NM = 40;
 const COMPARE_END_NM = 4;
 const COMPARE_ANCHORS = [
-  { id: "taxi", nm: 20 },     // starting to taxi   -> 20 NM final (RIGTA)
-  { id: "twy_f_hp", nm: 15 }, // arriving at TWY F  -> 15 NM final
+  { id: "taxi", nm: 25 },        // starting to taxi      -> 25 NM final
+  { id: "twy_p_f", nm: 20 },     // on TWY P              -> 20 NM final
+  { id: "twy_f_hp", nm: 15 },    // arriving at TWY F     -> 15 NM final
+  { id: "hp_lineup", nm: 10 },   // at the holding point  -> 10 NM final
+  { id: "lineup_roll", nm: 7 },  // lining up             -> 7 NM final
 ];
 
 /** RWY 36 arrival range (NM to touchdown) at ground elapsed `t`. */

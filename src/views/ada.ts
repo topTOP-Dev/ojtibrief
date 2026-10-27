@@ -9,7 +9,7 @@
  *  3. DEP line up    : ARR2 at 8 NM while ARR1 vacates the runway via TWY E.
  *  4. DEP roll       : departure commences take-off roll, ARR2 at 4 NM.
  * RWY 18 (dog-leg from the north): same steps, ARR2 at SUSEG → PILEK → 8 → 4 NM
- * track distance to touchdown.
+ * track distance to touchdown; ARR1 vacates via TWY F.
  *
  * Green = arrivals, amber = departure (consistent across both canvases). */
 
@@ -18,7 +18,7 @@ import { COLORS, byId, canvasCtx } from "../core/canvas";
 import { ease, lerp, pointAlong, smoothCorners, type Ease, type Pose, type Pt } from "../core/path";
 import { Player, type Segment } from "../core/player";
 import {
-  CONNECTOR_Y, GROUND_ROUTE_18, GROUND_ROUTE_36, TWY_E_Y, TWY_P_X, drawAirportBase, drawGroundAircraft,
+  CONNECTOR_Y, GROUND_ROUTE_18, GROUND_ROUTE_36, TWY_E_Y, TWY_F_Y, TWY_P_X, drawAirportBase, drawGroundAircraft,
 } from "../draw/airport";
 import { drawScopeBase, drawTarget, radialPoint, type ScopeGeom } from "../draw/radar";
 import { RWY18_TOTAL_NM, drawRoute18Base, route18Point } from "../draw/radar18";
@@ -47,7 +47,7 @@ const STEPS_36: AdaStep[] = [
 const STEPS_18: AdaStep[] = [
   { ...STEPS_36[0], arr2: { air: 30, fix: "SUSEG" } },
   { ...STEPS_36[1], arr2: { air: 16, fix: "PILEK" } },
-  STEPS_36[2],
+  { ...STEPS_36[2], arr1: { ground: "vacating", label: "Vacating via TWY F" } },
   STEPS_36[3],
 ];
 
@@ -76,10 +76,11 @@ const still = (p: Pt, heading: number): Move => ({
 });
 const decel: Ease = (f) => 1 - (1 - f) * (1 - f);
 
-/* After vacating: off TWY E onto TWY P, south to the apron connector, then in. */
-const VACATED: Pt = { x: 288, y: TWY_E_Y };
-const TO_APRON = smoothCorners([
-  VACATED, { x: TWY_P_X, y: TWY_E_Y }, { x: TWY_P_X, y: CONNECTOR_Y }, { x: 400, y: CONNECTOR_Y },
+/* After vacating: off the exit taxiway onto TWY P, along it to the apron
+ * connector, then in. RWY 36 vacates via TWY E, RWY 18 via TWY F. */
+const vacatedAt = (y: number): Pt => ({ x: 288, y });
+const toApron = (y: number): Pt[] => smoothCorners([
+  vacatedAt(y), { x: TWY_P_X, y }, { x: TWY_P_X, y: CONNECTOR_Y }, { x: 400, y: CONNECTOR_Y },
 ], 14);
 
 const HOLD36 = GROUND_ROUTE_36.hp_lineup.pts[0];
@@ -99,8 +100,8 @@ const SCENARIO_36: Scenario = {
   ],
   arr1: [
     { pts: [{ x: 220, y: 640 }, { x: 220, y: 460 }], ease: ease.holdThen(0.75, decel), fadeIn: true },
-    { pts: smoothCorners([{ x: 220, y: 460 }, { x: 220, y: TWY_E_Y }, VACATED], 18), ease: decel },
-    { pts: TO_APRON, ease: ease.linear, fadeOut: true },
+    { pts: smoothCorners([{ x: 220, y: 460 }, { x: 220, y: TWY_E_Y }, vacatedAt(TWY_E_Y)], 18), ease: decel },
+    { pts: toApron(TWY_E_Y), ease: ease.linear, fadeOut: true },
   ],
 };
 
@@ -116,8 +117,8 @@ const SCENARIO_18: Scenario = {
   ],
   arr1: [
     { pts: [{ x: 220, y: -40 }, { x: 220, y: 150 }], ease: ease.holdThen(0.75, decel), fadeIn: true },
-    { pts: smoothCorners([{ x: 220, y: 150 }, { x: 220, y: TWY_E_Y }, VACATED], 18), ease: decel },
-    { pts: TO_APRON, ease: ease.linear, fadeOut: true },
+    { pts: smoothCorners([{ x: 220, y: 150 }, { x: 220, y: TWY_F_Y }, vacatedAt(TWY_F_Y)], 18), ease: decel },
+    { pts: toApron(TWY_F_Y), ease: ease.linear, fadeOut: true },
   ],
 };
 

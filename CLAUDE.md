@@ -40,7 +40,7 @@ All drawing is Canvas 2D in a fixed logical 600×600 space; `setupCanvas()` scal
 ## Phase data
 
 - **Timings** (in-flight): `[{ nm, ttt }]`, 8 rings from 80 NM to 5 NM.
-- **Ground** (`ojtibrief.ground.v2`): `pushback`, `taxi` (Start Taxi → TWY P), `twy_p_f`, `twy_f_hp`, `hp_lineup`, `lineup_roll`. TWY P is the parallel taxiway. TWY E (just north of the apron connector) is the vacating taxiway; A-D-A arrivals exit there.
+- **Ground** (`ojtibrief.ground.v2`): `pushback`, `taxi` (Start Taxi → TWY P), `twy_p_f`, `twy_f_hp`, `hp_lineup`, `lineup_roll`. TWY P is the parallel taxiway. TWY E (just north of the apron connector) is the vacating taxiway for RWY 36; A-D-A RWY 36 arrivals exit there. A-D-A RWY 18 arrivals vacate via TWY F.
 - **Circuit** (`ojtibrief.circuit.v2`): `upwind`, `crosswind`, `downwind`, `base`, `final`, `touchdown` (right-hand, RWY 36, touch-and-go).
 - **Break**: `initial`, `turn180`, `base`, `landing`.
 
@@ -48,7 +48,7 @@ Stored arrays must match the default ids in order, otherwise the defaults are us
 
 ## Correlation anchors
 
-- **Mix Mode RWY 36** (`views/compare.ts`) maps ground elapsed time to arrival range with piecewise (elapsed, NM) anchors keyed to phase ids. Push start = 40 NM, end of `lineup_roll` = 4 NM. Start of `taxi` = 20 NM (RIGTA). Start of `twy_f_hp` (arriving TWY F) = 15 NM.
+- **Mix Mode RWY 36** (`views/compare.ts`) maps ground elapsed time to arrival range with piecewise (elapsed, NM) anchors keyed to phase ids. Push start = 40 NM, end of `lineup_roll` = 4 NM. Phase starts: `taxi` = 25 NM, `twy_p_f` = 20 NM, `twy_f_hp` = 15 NM, `hp_lineup` = 10 NM, `lineup_roll` = 7 NM.
 - **Mix Mode RWY 18** advances cumulative track distance linearly against `RWY18_TOTAL_NM`, down to the 4 NM final.
-- **Circuit**: the inbound is at 15 NM at the start of `base`. **Overhead**: 20 NM at the start of `turn180`. Both use `CIRCUIT_ANCHOR`/`BREAK_ANCHOR` in `config.ts`.
+- **Circuit**: the inbound is at 20 NM midway through `downwind`. **Overhead**: 20 NM at the start of `turn180`. Both use `CIRCUIT_ANCHOR`/`BREAK_ANCHOR` in `config.ts`.
 - **A-D-A**: each transition lasts as long as ARR2 takes to fly between its step ranges (from the ring timings).

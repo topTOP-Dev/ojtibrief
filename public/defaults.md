@@ -11,7 +11,7 @@ to regenerate this file. It lives in public/defaults.md.
 |  80 |                16:00 |
 |  60 |                12:00 |
 |  40 |                10:00 |
-|  25 |                 5:00 |
+|  25 |                 8:00 |
 |  20 |                 6:00 |
 |  10 |                 3:00 |
 |   7 |                 2:30 |

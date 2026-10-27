@@ -1,12 +1,13 @@
 /* Circuit and Overhead tabs: an inbound on the radar correlated with a
  * training pattern. The inbound is at `anchor.nm` when the pattern aircraft
- * starts phase `anchor.id`, then counts down by the ring timings:
- *   - Circuit:  15 NM at the start of Base → Final (end of downwind)
+ * is `anchor.frac` through phase `anchor.id`, then counts down by the ring
+ * timings:
+ *   - Circuit:  20 NM midway along downwind
  *   - Overhead: 20 NM at the start of the 180° turn (over the break point) */
 
 import {
   BREAK_ANCHOR, CIRCUIT_ANCHOR, COMPARE_SCOPE_RANGE_NM, formatMMSS, interpolateTTT, phaseStart,
-  tttToNM, type Phase,
+  tttToNM, type PatternAnchor, type Phase,
 } from "../config";
 import { byId, canvasCtx } from "../core/canvas";
 import { Player, type PhaseAt } from "../core/player";
@@ -21,7 +22,7 @@ interface PatternCfg {
   key: string;
   phaseLabel: string;
   phases: () => Phase[];
-  anchor: { id: string; nm: number };
+  anchor: PatternAnchor;
   draw: (ctx: CanvasRenderingContext2D, phases: Phase[], at: PhaseAt) => void;
   loop?: boolean;
 }
@@ -37,8 +38,9 @@ function createPatternView(cfg: PatternCfg): View {
 
   function nmAt(phases: Phase[], t: number): number {
     const idx = Math.max(0, phases.findIndex((p) => p.id === cfg.anchor.id));
+    const anchorT = phaseStart(phases, idx) + (cfg.anchor.frac ?? 0) * (phases[idx]?.duration ?? 0);
     const anchorTTT = interpolateTTT(state.timings, cfg.anchor.nm);
-    return tttToNM(state.timings, Math.max(0, anchorTTT - (t - phaseStart(phases, idx))));
+    return tttToNM(state.timings, Math.max(0, anchorTTT - (t - anchorT)));
   }
 
   const table = new PhaseTable(

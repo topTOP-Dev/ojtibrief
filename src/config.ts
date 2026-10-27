@@ -128,10 +128,13 @@ export const breakStore = phaseStore("ojtibrief.break", [
   { id: "landing", label: "Landing",         duration: 60 },
 ]);
 
-// Inbound range when the circuit aircraft starts its base turn.
-export const CIRCUIT_ANCHOR = { id: "base", nm: 15 };
+/** Inbound range `nm` when the pattern aircraft is `frac` of the way through
+ * phase `id` (0 = phase start). */
+export interface PatternAnchor { id: string; nm: number; frac?: number }
+// Inbound range when the circuit aircraft is midway along downwind.
+export const CIRCUIT_ANCHOR: PatternAnchor = { id: "downwind", nm: 20, frac: 0.5 };
 // Inbound range when the jet crosses the break point (start of the 180° turn).
-export const BREAK_ANCHOR = { id: "turn180", nm: 20 };
+export const BREAK_ANCHOR: PatternAnchor = { id: "turn180", nm: 20 };
 
 /* ---- Time helpers ---- */
 

@@ -10,12 +10,12 @@ to regenerate this file. It lives in public/defaults.md.
 | --: | -------------------: |
 |  80 |                16:00 |
 |  60 |                12:00 |
-|  40 |                 8:00 |
+|  40 |                10:00 |
 |  25 |                 5:00 |
-|  20 |                 4:00 |
-|  10 |                 2:00 |
-|   7 |                 1:24 |
-|   5 |                 1:00 |
+|  20 |                 6:00 |
+|  10 |                 3:00 |
+|   7 |                 2:30 |
+|   5 |                 2:00 |
 
 ## Ground Phases
 
@@ -24,9 +24,9 @@ to regenerate this file. It lives in public/defaults.md.
 | pushback    | Start Push → Push Complete     |             3:00 |
 | taxi        | Start Taxi → TWY P             |             1:00 |
 | twy_p_f     | TWY P → TWY F                  |             1:00 |
-| twy_f_hp    | TWY F → Holding Point          |             1:00 |
-| hp_lineup   | Holding Point → Line Up        |             2:00 |
-| lineup_roll | Line Up → Rolling for Take-off |             1:00 |
+| twy_f_hp    | TWY F → Holding Point          |             2:00 |
+| hp_lineup   | Holding Point → Line Up        |             1:00 |
+| lineup_roll | Line Up → Rolling for Take-off |             0:30 |
 
 ## Circuit Phases
 
@@ -44,6 +44,6 @@ to regenerate this file. It lives in public/defaults.md.
 | id      | Phase           | Duration (mm:ss) |
 | ------- | --------------- | ---------------: |
 | initial | Initial → Break |             1:00 |
-| turn180 | 180° Turn       |             2:00 |
+| turn180 | 180° Turn       |             1:30 |
 | base    | Base Leg        |             0:30 |
 | landing | Landing         |             1:00 |
